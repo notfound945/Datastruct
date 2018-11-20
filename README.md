@@ -1,2 +1,2 @@
-# Datastruct
-数据结构学习
+# DataStruct
+数据结构学习笔记
