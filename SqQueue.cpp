@@ -1,9 +1,7 @@
 //============================================================================
 // Name        : SqQueue.cpp
 // Author      : PHL
-// Version     :
-// Copyright   : 
-// Content    : Êı¾İ½á¹¹ £º ¶ÓÁĞ Ë³Ğò½á¹¹
+// Content    : æ•°æ®ç»“æ„ ï¼š é˜Ÿåˆ— é¡ºåºç»“æ„
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
@@ -14,7 +12,7 @@ using namespace std;
 #define MAXSIZE 100
 typedef int QElemType;
 
-// ------------ ¶ÓÁĞµÄË³Ğò´æ´¢½á¹¹ --------------------
+// ------------ é˜Ÿåˆ—çš„é¡ºåºå­˜å‚¨ç»“æ„ --------------------
 typedef struct
 {
 	QElemType *base;
@@ -22,7 +20,7 @@ typedef struct
 	int rear;
 }SqQueue;
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 int InitSqQueue(SqQueue &S)
 {
 	S.base = new QElemType[MAXSIZE];
@@ -30,45 +28,45 @@ int InitSqQueue(SqQueue &S)
 	return 0;
 }
 
-// Èë¶ÓÁĞ
+// å…¥é˜Ÿåˆ—
 int EnterQueue(SqQueue &S, QElemType e)
 {
-	if((S.rear +1) % MAXSIZE == S.front) // ¶ÓÂú
+	if((S.rear +1) % MAXSIZE == S.front) // é˜Ÿæ»¡
 		return -1;
-	S.base[S.rear] = e; // ĞÂÔªËØ²åÈëµ½¶ÓÎ²
-	S.rear = (S.rear+1) % MAXSIZE; // Î²Ö¸Õë¼Ó1
+	S.base[S.rear] = e; // æ–°å…ƒç´ æ’å…¥åˆ°é˜Ÿå°¾
+	S.rear = (S.rear+1) % MAXSIZE; // å°¾æŒ‡é’ˆåŠ 1
 
 	return 0;
 }
 
-// ³ö¶ÓÁĞ
+// å‡ºé˜Ÿåˆ—
 int DeleteQueue(SqQueue &S, QElemType &e)
 {
-	if(S.rear == S.front) // ¶Ó¿Õ
+	if(S.rear == S.front) // é˜Ÿç©º
 		return -1;
-	e = S.base[S.front];  // ±£´æ¶ÓÍ·Ö¸Õë
-	S.front = (S.front+1) % MAXSIZE; // Í·Ö¸Õë¼Ó 1
+	e = S.base[S.front];  // ä¿å­˜é˜Ÿå¤´æŒ‡é’ˆ
+	S.front = (S.front+1) % MAXSIZE; // å¤´æŒ‡é’ˆåŠ  1
 	return 0;
 }
 
-// ´òÓ¡¶ÓÁĞÔªËØ
+// æ‰“å°é˜Ÿåˆ—å…ƒç´ 
 void PrintQueue(SqQueue &S)
 {
 	for(int i = S.front; i < S.rear; i++)
 		cout<<" "<<S.base[i];
 }
 
-// ¶ÓÁĞ³¤¶È
+// é˜Ÿåˆ—é•¿åº¦
 int LengthQueue(SqQueue &S)
 {
 	return (S.rear - S.front + MAXSIZE) % MAXSIZE;
 }
 
-// È¡¶¥ÔªËØ
+// å–é¡¶å…ƒç´ 
 void GetTop(SqQueue &S)
 {
 	if(S.rear == S.front)
-		cout<<"¶ÓÁĞÎª¿Õ"<<endl;
+		cout<<"é˜Ÿåˆ—ä¸ºç©º"<<endl;
 	else
 		cout<<S.base[S.front]<<endl;;
 
@@ -78,35 +76,35 @@ int main() {
 	SqQueue S;
 	int number;
 	QElemType  elem;
-	cout<<"--³õÊ¼»¯¶ÓÁĞ--"<<endl;
+	cout<<"--åˆå§‹åŒ–é˜Ÿåˆ—--"<<endl;
 	InitSqQueue(S);
-	cout<<"--Èë¶Ó²Ù×÷--"<<endl;
-	cout<<"ÇëÊäÈëÈë¶ÓÔªËØ¸öÊı"<<endl;
+	cout<<"--å…¥é˜Ÿæ“ä½œ--"<<endl;
+	cout<<"è¯·è¾“å…¥å…¥é˜Ÿå…ƒç´ ä¸ªæ•°"<<endl;
 	cin>>number;
 
 	for(int i = 0; i < number; i++)
 	{
 		cin>>elem;
 		if(EnterQueue(S, elem) == 0)
-			cout<<elem<<" ÔªËØÈë¶Ó³É¹¦"<<endl;
+			cout<<elem<<" å…ƒç´ å…¥é˜ŸæˆåŠŸ"<<endl;
 		else
-			cout<<elem<<" ÔªËØÈë¶ÓÊ§°Ü"<<endl;
+			cout<<elem<<" å…ƒç´ å…¥é˜Ÿå¤±è´¥"<<endl;
 	}
-	cout<<"--³ö¶Ó²Ù×÷--"<<endl;
+	cout<<"--å‡ºé˜Ÿæ“ä½œ--"<<endl;
 	if(DeleteQueue(S, elem) == 0)
-		cout<<elem<<" ÔªËØ³ö¶Ó³É¹¦"<<endl;
+		cout<<elem<<" å…ƒç´ å‡ºé˜ŸæˆåŠŸ"<<endl;
 	else
-		cout<<elem<<"ÔªËØ³ö¶ÓÊ§°Ü"<<endl;
+		cout<<elem<<"å…ƒç´ å‡ºé˜Ÿå¤±è´¥"<<endl;
 
-	cout<<"--´òÓ¡¶ÓÁĞÖĞÔªËØ--"<<endl;
+	cout<<"--æ‰“å°é˜Ÿåˆ—ä¸­å…ƒç´ --"<<endl;
 	PrintQueue(S);
 	cout<<endl;
 
-	cout<<"--¶ÓÁĞ³¤¶È--"<<endl;
+	cout<<"--é˜Ÿåˆ—é•¿åº¦--"<<endl;
 	cout<<LengthQueue(S);
 	cout<<endl;
 
-	cout<<"--¶ÓÍ·ÔªËØ--"<<endl;
+	cout<<"--é˜Ÿå¤´å…ƒç´ --"<<endl;
 	GetTop(S);
 	cout<<endl;
 
