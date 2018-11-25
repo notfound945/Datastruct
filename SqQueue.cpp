@@ -1,7 +1,9 @@
 //============================================================================
 // Name        : SqQueue.cpp
 // Author      : PHL
-// Content    : æ•°æ®ç»“æ„ ï¼š é˜Ÿåˆ— é¡ºåºç»“æ„
+// Version     :
+// Copyright   : 
+// Content    : Êı¾İ½á¹¹ £º ¶ÓÁĞ Á´±í½á¹¹
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
@@ -9,105 +11,127 @@
 
 using namespace std;
 
-#define MAXSIZE 100
 typedef int QElemType;
 
-// ------------ é˜Ÿåˆ—çš„é¡ºåºå­˜å‚¨ç»“æ„ --------------------
+// ------------ ¶ÓÁĞµÄÁ´±í´æ´¢½á¹¹ --------------------
+//Á´±í
+typedef struct QNode
+{
+	QElemType data;
+	struct QNode *next;
+}QNode, *QueuePtr;
+
 typedef struct
 {
-	QElemType *base;
-	int front;
-	int rear;
-}SqQueue;
+	QueuePtr front; // Í·Ö¸Õë
+	QueuePtr rear; // Î²Ö¸Õë
+}LinkQueue;
 
-// åˆå§‹åŒ–
-int InitSqQueue(SqQueue &S)
+// ³õÊ¼»¯
+int InitSqQueue(LinkQueue &L)
 {
-	S.base = new QElemType[MAXSIZE];
-	S.rear = S.front = 0;
+	L.front = L.rear = new QNode; // Éú³ÉĞÂ½áµã×÷ÎªÍ·½áµã ¶ÓÍ·ºÍ¶ÓÎ²Ö¸ÕëÖ¸Ïò´Ë½áµã
+	L.rear->next = NULL;
 	return 0;
 }
 
-// å…¥é˜Ÿåˆ—
-int EnterQueue(SqQueue &S, QElemType e)
+// Èë¶ÓÁĞ
+int EnterQueue(LinkQueue &L, QElemType e)
 {
-	if((S.rear +1) % MAXSIZE == S.front) // é˜Ÿæ»¡
+	QNode *p = new QNode; // Éú³ÉĞÂ½áµã ¸³Öµ¸ø´Ë½áµã
+	p->next = NULL;
+	p->data= e;
+	L.rear->next = p;
+	L.rear = p;
+	return 0;
+}
+
+// ³ö¶ÓÁĞ
+int DeleteQueue(LinkQueue &L, QElemType &e)
+{
+	QNode *temp  = new QNode;
+	if(L.rear == L.front) // ¶Ó¿Õ
 		return -1;
-	S.base[S.rear] = e; // æ–°å…ƒç´ æ’å…¥åˆ°é˜Ÿå°¾
-	S.rear = (S.rear+1) % MAXSIZE; // å°¾æŒ‡é’ˆåŠ 1
-
+	temp = L.front->next; // Ö¸ÏòÍ·ÔªËØ Í·ÔªËØ
+	e = temp->data; // ±£´æ¶ÓÍ·ÔªËØ
+	L.front->next = temp->next; // ĞŞ¸ÄÍ·½áµãµÄÖ¸ÕëÓò
+	if(L.rear == temp) // Í·ÔªËØÎª×îºóÒ»ÔªËØ ¶ÓÎ²Ö¸Õë Ö¸ÏòÍ·½áµã
+		L.rear == L.front;
+	delete temp; // ÊÍ·ÅÁÙÊ±½áµã¿Õ¼ä
 	return 0;
 }
 
-// å‡ºé˜Ÿåˆ—
-int DeleteQueue(SqQueue &S, QElemType &e)
+// ´òÓ¡¶ÓÁĞÔªËØ
+void PrintQueue(LinkQueue &S)
 {
-	if(S.rear == S.front) // é˜Ÿç©º
-		return -1;
-	e = S.base[S.front];  // ä¿å­˜é˜Ÿå¤´æŒ‡é’ˆ
-	S.front = (S.front+1) % MAXSIZE; // å¤´æŒ‡é’ˆåŠ  1
-	return 0;
+	LinkQueue temp; // ÁÙÊ±¶ÓÁĞ
+	temp = S;
+	while(temp.front->next != NULL) // Í¨¹ıÖ¸ÕëÓòÉíºó±éÀú
+	{
+		cout<<temp.front->next->data<<" ";
+		temp.front = temp.front->next;
+	}
+
 }
 
-// æ‰“å°é˜Ÿåˆ—å…ƒç´ 
-void PrintQueue(SqQueue &S)
+// ¶ÓÁĞ³¤¶È
+int LengthQueue(LinkQueue &S)
 {
-	for(int i = S.front; i < S.rear; i++)
-		cout<<" "<<S.base[i];
+	int length = 0;// ¼ÆÊıÆ÷
+	LinkQueue temp;
+	temp = S;
+	while(temp.front->next != NULL)
+	{
+		length++;
+		temp.front = temp.front->next;
+	}
+	return length;
 }
 
-// é˜Ÿåˆ—é•¿åº¦
-int LengthQueue(SqQueue &S)
+// È¡¶ÓÍ·ÔªËØ
+void GetTop(LinkQueue &L)
 {
-	return (S.rear - S.front + MAXSIZE) % MAXSIZE;
-}
-
-// å–é¡¶å…ƒç´ 
-void GetTop(SqQueue &S)
-{
-	if(S.rear == S.front)
-		cout<<"é˜Ÿåˆ—ä¸ºç©º"<<endl;
+	if(L.rear == L.front)
+		cout<<"¶ÓÁĞÎª¿Õ"<<endl;
 	else
-		cout<<S.base[S.front]<<endl;;
-
+		cout<<"¶ÓÍ·ÔªËØÎª "<<L.front->next->data;
 }
 
 int main() {
-	SqQueue S;
+	LinkQueue L;
 	int number;
 	QElemType  elem;
-	cout<<"--åˆå§‹åŒ–é˜Ÿåˆ—--"<<endl;
-	InitSqQueue(S);
-	cout<<"--å…¥é˜Ÿæ“ä½œ--"<<endl;
-	cout<<"è¯·è¾“å…¥å…¥é˜Ÿå…ƒç´ ä¸ªæ•°"<<endl;
+	cout<<"--³õÊ¼»¯¶ÓÁĞ--"<<endl;
+	InitSqQueue(L);
+	cout<<"--Èë¶Ó²Ù×÷--"<<endl;
+	cout<<"ÇëÊäÈëÈë¶ÓÔªËØ¸öÊı"<<endl;
 	cin>>number;
 
 	for(int i = 0; i < number; i++)
 	{
 		cin>>elem;
-		if(EnterQueue(S, elem) == 0)
-			cout<<elem<<" å…ƒç´ å…¥é˜ŸæˆåŠŸ"<<endl;
+		if(EnterQueue(L, elem) == 0)
+			cout<<elem<<" ÔªËØÈë¶Ó³É¹¦"<<endl;
 		else
-			cout<<elem<<" å…ƒç´ å…¥é˜Ÿå¤±è´¥"<<endl;
+			cout<<elem<<" ÔªËØÈë¶ÓÊ§°Ü"<<endl;
 	}
-	cout<<"--å‡ºé˜Ÿæ“ä½œ--"<<endl;
-	if(DeleteQueue(S, elem) == 0)
-		cout<<elem<<" å…ƒç´ å‡ºé˜ŸæˆåŠŸ"<<endl;
+	cout<<"--³ö¶Ó²Ù×÷--"<<endl;
+	if(DeleteQueue(L, elem) == 0)
+		cout<<elem<<" ÔªËØ³ö¶Ó³É¹¦"<<endl;
 	else
-		cout<<elem<<"å…ƒç´ å‡ºé˜Ÿå¤±è´¥"<<endl;
+		cout<<elem<<"ÔªËØ³ö¶ÓÊ§°Ü"<<endl;
 
-	cout<<"--æ‰“å°é˜Ÿåˆ—ä¸­å…ƒç´ --"<<endl;
-	PrintQueue(S);
+	cout<<"--´òÓ¡¶ÓÁĞÖĞÔªËØ--"<<endl;
+	PrintQueue(L);
 	cout<<endl;
 
-	cout<<"--é˜Ÿåˆ—é•¿åº¦--"<<endl;
-	cout<<LengthQueue(S);
+	cout<<"--¶ÓÁĞ³¤¶È--"<<endl;
+	cout<<LengthQueue(L);
 	cout<<endl;
 
-	cout<<"--é˜Ÿå¤´å…ƒç´ --"<<endl;
-	GetTop(S);
+	cout<<"--¶ÓÍ·ÔªËØ--"<<endl;
+	GetTop(L);
 	cout<<endl;
-
 
 	return 0;
 }
