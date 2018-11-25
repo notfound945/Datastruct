@@ -3,7 +3,7 @@
 // Author      : PHL
 // Version     :
 // Copyright   : 
-// Content    : Êı¾İ½á¹¹ £º ¶ÓÁĞ Á´±í½á¹¹
+// Content    : æ•°æ®ç»“æ„ ï¼š é˜Ÿåˆ— é“¾è¡¨ç»“æ„
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
@@ -13,8 +13,8 @@ using namespace std;
 
 typedef int QElemType;
 
-// ------------ ¶ÓÁĞµÄÁ´±í´æ´¢½á¹¹ --------------------
-//Á´±í
+// ------------ é˜Ÿåˆ—çš„é“¾è¡¨å­˜å‚¨ç»“æ„ --------------------
+//é“¾è¡¨
 typedef struct QNode
 {
 	QElemType data;
@@ -23,22 +23,22 @@ typedef struct QNode
 
 typedef struct
 {
-	QueuePtr front; // Í·Ö¸Õë
-	QueuePtr rear; // Î²Ö¸Õë
+	QueuePtr front; // å¤´æŒ‡é’ˆ
+	QueuePtr rear; // å°¾æŒ‡é’ˆ
 }LinkQueue;
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 int InitSqQueue(LinkQueue &L)
 {
-	L.front = L.rear = new QNode; // Éú³ÉĞÂ½áµã×÷ÎªÍ·½áµã ¶ÓÍ·ºÍ¶ÓÎ²Ö¸ÕëÖ¸Ïò´Ë½áµã
+	L.front = L.rear = new QNode; // ç”Ÿæˆæ–°ç»“ç‚¹ä½œä¸ºå¤´ç»“ç‚¹ é˜Ÿå¤´å’Œé˜Ÿå°¾æŒ‡é’ˆæŒ‡å‘æ­¤ç»“ç‚¹
 	L.rear->next = NULL;
 	return 0;
 }
 
-// Èë¶ÓÁĞ
+// å…¥é˜Ÿåˆ—
 int EnterQueue(LinkQueue &L, QElemType e)
 {
-	QNode *p = new QNode; // Éú³ÉĞÂ½áµã ¸³Öµ¸ø´Ë½áµã
+	QNode *p = new QNode; // ç”Ÿæˆæ–°ç»“ç‚¹ èµ‹å€¼ç»™æ­¤ç»“ç‚¹
 	p->next = NULL;
 	p->data= e;
 	L.rear->next = p;
@@ -46,27 +46,27 @@ int EnterQueue(LinkQueue &L, QElemType e)
 	return 0;
 }
 
-// ³ö¶ÓÁĞ
+// å‡ºé˜Ÿåˆ—
 int DeleteQueue(LinkQueue &L, QElemType &e)
 {
 	QNode *temp  = new QNode;
-	if(L.rear == L.front) // ¶Ó¿Õ
+	if(L.rear == L.front) // é˜Ÿç©º
 		return -1;
-	temp = L.front->next; // Ö¸ÏòÍ·ÔªËØ Í·ÔªËØ
-	e = temp->data; // ±£´æ¶ÓÍ·ÔªËØ
-	L.front->next = temp->next; // ĞŞ¸ÄÍ·½áµãµÄÖ¸ÕëÓò
-	if(L.rear == temp) // Í·ÔªËØÎª×îºóÒ»ÔªËØ ¶ÓÎ²Ö¸Õë Ö¸ÏòÍ·½áµã
+	temp = L.front->next; // æŒ‡å‘å¤´å…ƒç´  å¤´å…ƒç´ 
+	e = temp->data; // ä¿å­˜é˜Ÿå¤´å…ƒç´ 
+	L.front->next = temp->next; // ä¿®æ”¹å¤´ç»“ç‚¹çš„æŒ‡é’ˆåŸŸ
+	if(L.rear == temp) // å¤´å…ƒç´ ä¸ºæœ€åä¸€å…ƒç´  é˜Ÿå°¾æŒ‡é’ˆ æŒ‡å‘å¤´ç»“ç‚¹
 		L.rear == L.front;
-	delete temp; // ÊÍ·ÅÁÙÊ±½áµã¿Õ¼ä
+	delete temp; // é‡Šæ”¾ä¸´æ—¶ç»“ç‚¹ç©ºé—´
 	return 0;
 }
 
-// ´òÓ¡¶ÓÁĞÔªËØ
+// æ‰“å°é˜Ÿåˆ—å…ƒç´ 
 void PrintQueue(LinkQueue &S)
 {
-	LinkQueue temp; // ÁÙÊ±¶ÓÁĞ
+	LinkQueue temp; // ä¸´æ—¶é˜Ÿåˆ—
 	temp = S;
-	while(temp.front->next != NULL) // Í¨¹ıÖ¸ÕëÓòÉíºó±éÀú
+	while(temp.front->next != NULL) // é€šè¿‡æŒ‡é’ˆåŸŸèº«åéå†
 	{
 		cout<<temp.front->next->data<<" ";
 		temp.front = temp.front->next;
@@ -74,10 +74,10 @@ void PrintQueue(LinkQueue &S)
 
 }
 
-// ¶ÓÁĞ³¤¶È
+// é˜Ÿåˆ—é•¿åº¦
 int LengthQueue(LinkQueue &S)
 {
-	int length = 0;// ¼ÆÊıÆ÷
+	int length = 0;// è®¡æ•°å™¨
 	LinkQueue temp;
 	temp = S;
 	while(temp.front->next != NULL)
@@ -88,48 +88,48 @@ int LengthQueue(LinkQueue &S)
 	return length;
 }
 
-// È¡¶ÓÍ·ÔªËØ
+// å–é˜Ÿå¤´å…ƒç´ 
 void GetTop(LinkQueue &L)
 {
 	if(L.rear == L.front)
-		cout<<"¶ÓÁĞÎª¿Õ"<<endl;
+		cout<<"é˜Ÿåˆ—ä¸ºç©º"<<endl;
 	else
-		cout<<"¶ÓÍ·ÔªËØÎª "<<L.front->next->data;
+		cout<<"é˜Ÿå¤´å…ƒç´ ä¸º "<<L.front->next->data;
 }
 
 int main() {
 	LinkQueue L;
 	int number;
 	QElemType  elem;
-	cout<<"--³õÊ¼»¯¶ÓÁĞ--"<<endl;
+	cout<<"--åˆå§‹åŒ–é˜Ÿåˆ—--"<<endl;
 	InitSqQueue(L);
-	cout<<"--Èë¶Ó²Ù×÷--"<<endl;
-	cout<<"ÇëÊäÈëÈë¶ÓÔªËØ¸öÊı"<<endl;
+	cout<<"--å…¥é˜Ÿæ“ä½œ--"<<endl;
+	cout<<"è¯·è¾“å…¥å…¥é˜Ÿå…ƒç´ ä¸ªæ•°"<<endl;
 	cin>>number;
 
 	for(int i = 0; i < number; i++)
 	{
 		cin>>elem;
 		if(EnterQueue(L, elem) == 0)
-			cout<<elem<<" ÔªËØÈë¶Ó³É¹¦"<<endl;
+			cout<<elem<<" å…ƒç´ å…¥é˜ŸæˆåŠŸ"<<endl;
 		else
-			cout<<elem<<" ÔªËØÈë¶ÓÊ§°Ü"<<endl;
+			cout<<elem<<" å…ƒç´ å…¥é˜Ÿå¤±è´¥"<<endl;
 	}
-	cout<<"--³ö¶Ó²Ù×÷--"<<endl;
+	cout<<"--å‡ºé˜Ÿæ“ä½œ--"<<endl;
 	if(DeleteQueue(L, elem) == 0)
-		cout<<elem<<" ÔªËØ³ö¶Ó³É¹¦"<<endl;
+		cout<<elem<<" å…ƒç´ å‡ºé˜ŸæˆåŠŸ"<<endl;
 	else
-		cout<<elem<<"ÔªËØ³ö¶ÓÊ§°Ü"<<endl;
+		cout<<elem<<"å…ƒç´ å‡ºé˜Ÿå¤±è´¥"<<endl;
 
-	cout<<"--´òÓ¡¶ÓÁĞÖĞÔªËØ--"<<endl;
+	cout<<"--æ‰“å°é˜Ÿåˆ—ä¸­å…ƒç´ --"<<endl;
 	PrintQueue(L);
 	cout<<endl;
 
-	cout<<"--¶ÓÁĞ³¤¶È--"<<endl;
+	cout<<"--é˜Ÿåˆ—é•¿åº¦--"<<endl;
 	cout<<LengthQueue(L);
 	cout<<endl;
 
-	cout<<"--¶ÓÍ·ÔªËØ--"<<endl;
+	cout<<"--é˜Ÿå¤´å…ƒç´ --"<<endl;
 	GetTop(L);
 	cout<<endl;
 
