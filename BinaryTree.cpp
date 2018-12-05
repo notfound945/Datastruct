@@ -1,25 +1,25 @@
 // BinaryTree.cpp
-// Êı¾İ½á¹¹ : ¶ş²æÊ÷
-// ¶ş²æÊ÷µÄ¶ş²æÁ´±í´æ´¢±íÊ¾
+// æ•°æ®ç»“æ„ : äºŒå‰æ ‘
+// äºŒå‰æ ‘çš„äºŒå‰é“¾è¡¨å­˜å‚¨è¡¨ç¤º
 #include <iostream>
-#include <fstream> // ifstream ofstream ËùÓÃÍ·ÎÄ¼ş
+#include <fstream> // ifstream ofstream æ‰€ç”¨å¤´æ–‡ä»¶
 
 using namespace std;
 
 typedef char TElemType;
 
-ifstream inputfile; // ¶¨ÒåÊäÈëÎÄ¼ş
+ifstream inputfile; // å®šä¹‰è¾“å…¥æ–‡ä»¶
 
-// ¶ş²æÊ÷µÄ¶ş²æÁ´±í´æ´¢±íÊ¾
+// äºŒå‰æ ‘çš„äºŒå‰é“¾è¡¨å­˜å‚¨è¡¨ç¤º
 typedef struct BiTNode {
     TElemType data;
     struct BiTNode *leftChild, *rightChild;
 }BiTNode, *BiTree;
 
-//  ±éÀú¶ş²æÊ÷(µİ¹éËã·¨)
+//  éå†äºŒå‰æ ‘(é€’å½’ç®—æ³•)
 void PreOrderTraverse(BiTree &T)
 {
-    // ÏÈĞò±éÀú
+    // å…ˆåºéå†
     if(T)
     {
         cout<<T->data;
@@ -32,7 +32,7 @@ void PreOrderTraverse(BiTree &T)
 
 void InOrderTraverse(BiTree &T)
 {
-    // ÖĞĞò±éÀú
+    // ä¸­åºéå†
     if(T)
     {
         InOrderTraverse(T->leftChild);
@@ -45,7 +45,7 @@ void InOrderTraverse(BiTree &T)
 
 void PostOrderTraverse(BiTree &T)
 {
-    // ºóĞò±éÀú
+    // ååºéå†
     if(T)
     {
         PostOrderTraverse(T->leftChild);
@@ -57,11 +57,11 @@ void PostOrderTraverse(BiTree &T)
 }
 
 
-// ÖĞĞò±éÀú½¨Á¢¶ş²æÊ÷
+// ä¸­åºéå†å»ºç«‹äºŒå‰æ ‘
 void InOrderCreateBiTree(BiTree &T)
 {
     char ch;
-   // if(inputfile.peek() != EOF) // ¶ÁÈ¡ÎÄ¼şÖ¸ÕëÏÂÒ»Î»ÖÃµÄÖµ6
+    if(inputfile.peek() != EOF) // è¯»å–æ–‡ä»¶æŒ‡é’ˆä¸‹ä¸€ä½ç½®çš„å€¼
     {
         inputfile>>ch;
         if(ch == '#')
@@ -110,23 +110,23 @@ void PostOrderCreateBiTree(BiTree &T)
 int main()
 {
     BiTree T;
-    ofstream outputfile; // ¶¨ÒåÊä³öÎÄ¼ş
-    cout<<endl<<" Ğ´ÈëÊ÷½áµãÊı¾İµ½ BiTree.txtÎÄ¼şÖĞ "<<endl;
+    ofstream outputfile; // å®šä¹‰è¾“å‡ºæ–‡ä»¶
+    cout<<endl<<" å†™å…¥æ ‘ç»“ç‚¹æ•°æ®åˆ° BiTree.txtæ–‡ä»¶ä¸­ "<<endl;
     outputfile.open("./BiTree.txt");
-    cout<<" Ê÷½áµãÊı¾İÎª ABC##DE#G##F### "<<endl;
+    cout<<" æ ‘ç»“ç‚¹æ•°æ®ä¸º ABC##DE#G##F### "<<endl;
     outputfile<<"ABC##DE#G##F###";
-    outputfile.close(); // ¹Ø±ÕÊä³öÎÄ¼ş
-    cout<<" ´Ó BiTree.txt ÎÄ¼şÔØÈëÊ÷½áµãÊı¾İ "<<endl;
+    outputfile.close(); // å…³é—­è¾“å‡ºæ–‡ä»¶
+    cout<<" ä» BiTree.txt æ–‡ä»¶è½½å…¥æ ‘ç»“ç‚¹æ•°æ® "<<endl;
     inputfile.open("./BiTree.txt");
 
-    cout<<" Ê¹ÓÃÊ÷½áµãÊı¾İÖĞĞò±éÀú½¨Á¢¶ş²æÊ÷"<<endl;
+    cout<<" ä½¿ç”¨æ ‘ç»“ç‚¹æ•°æ®ä¸­åºéå†å»ºç«‹äºŒå‰æ ‘"<<endl;
     InOrderCreateBiTree(T);
-    inputfile.close(); // ¹Ø±ÕÊäÈëÎÄ¼ş
-    cout<<endl<<"---"<<endl<<" ÏÈĞò±éÀú¶ş²æÊ÷"<<endl<<endl<<"    ";
+    inputfile.close(); // å…³é—­è¾“å…¥æ–‡ä»¶
+    cout<<endl<<"---"<<endl<<" å…ˆåºéå†äºŒå‰æ ‘"<<endl<<endl<<"    ";
     PreOrderTraverse(T);
-    cout<<endl<<"---"<<endl<<" ÖĞĞò±éÀú¶ş²æÊ÷"<<endl<<endl<<"    ";
+    cout<<endl<<"---"<<endl<<" ä¸­åºéå†äºŒå‰æ ‘"<<endl<<endl<<"    ";
     InOrderTraverse(T);
-    cout<<endl<<"---"<<endl<<" ºóĞò±éÀú¶ş²æÊ÷"<<endl<<endl<<"    ";
+    cout<<endl<<"---"<<endl<<" ååºéå†äºŒå‰æ ‘"<<endl<<endl<<"    ";
     PostOrderTraverse(T);
 
 }
