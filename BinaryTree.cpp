@@ -44,7 +44,7 @@ void InOrderTraverse(BiTree T)
     else
         cout<<"#";
 }
-// 后序遍历二叉树
+
 void PostOrderTraverse(BiTree T)
 {
     // 后序遍历
