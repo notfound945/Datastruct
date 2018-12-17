@@ -3,7 +3,7 @@
 // Author      : PHL
 // Version     :
 // Copyright   : 
-// Content : Êı¾İ½á¹¹£ºÁÚ½Ó±í (Adjacency List) Éî¶ÈÓÅÏÈ±éÀú
+// Content : æ•°æ®ç»“æ„ï¼šé‚»æ¥è¡¨ (Adjacency List) æ·±åº¦ä¼˜å…ˆéå†
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
@@ -14,25 +14,25 @@ using namespace std;
 #define MAX_NUMBER 100
 typedef int ElemType ;
 
-// ±ß±í (±ß½áµã) ´¢´æËùÓĞÓëĞ©¶¥µãÏà¹ØµÄ±ß
+// è¾¹è¡¨ (è¾¹ç»“ç‚¹) å‚¨å­˜æ‰€æœ‰ä¸äº›é¡¶ç‚¹ç›¸å…³çš„è¾¹
 typedef struct ArcNode {
-	int adjvex; //¸Ã±ßËùÖ¸ÏòµÄ¶¥µãÎ»ÖÃ
-	struct ArcNode *nextarc; // ÏÂÒ»Ìõ±ßµÄµØÖ·
+	int adjvex; //è¯¥è¾¹æ‰€æŒ‡å‘çš„é¡¶ç‚¹ä½ç½®
+	struct ArcNode *nextarc; // ä¸‹ä¸€æ¡è¾¹çš„åœ°å€
 }ArcNode;
 
-// ¶¥µãĞÅÏ¢
+// é¡¶ç‚¹ä¿¡æ¯
 typedef struct VNode {
-	char name[10]; // ¶¥µãÊı¾İÓò
-	ArcNode *firstarc; // Ö¸ÏòÓë´Ë¶¥µãÁ¬½ÓµÚÒ»Ìõ±ßµÄÖ¸Õë
+	char name[10]; // é¡¶ç‚¹æ•°æ®åŸŸ
+	ArcNode *firstarc; // æŒ‡å‘ä¸æ­¤é¡¶ç‚¹è¿æ¥ç¬¬ä¸€æ¡è¾¹çš„æŒ‡é’ˆ
 }VNode, AdjList[MAX_NUMBER];
 
-// ÁÚ½Ó±í
+// é‚»æ¥è¡¨
 typedef struct ALGraph{
 	AdjList vertices;
 	int verNumber, arcNumber;
 }ALGraph;
 
-// ¶¨Î»¶¥µãĞòºÅ
+// å®šä½é¡¶ç‚¹åºå·
 int LocationVex(ALGraph A, char ver[10] )
 {
 	for(int l = 0; l < A.verNumber; l++)
@@ -43,34 +43,34 @@ int LocationVex(ALGraph A, char ver[10] )
 	return -1;
 }
 
-// ÀûÓÃÁÚ½Ó±í±íÊ¾·¨´´½¨ÎŞÏòÍ¼
+// åˆ©ç”¨é‚»æ¥è¡¨è¡¨ç¤ºæ³•åˆ›å»ºæ— å‘å›¾
 int CreateGraph(ALGraph &A)
 {
 	int i = 0, j = 0;
-	char v1[10], v2[10]; // ±íÊ¾±ßÉÏµÄÁ½¸ö¶¥µã
+	char v1[10], v2[10]; // è¡¨ç¤ºè¾¹ä¸Šçš„ä¸¤ä¸ªé¡¶ç‚¹
 	ArcNode *p1, *p2;
-	cout<<"ÇëÊäÈëÁÚ½Ó±íµÄ¶¥µãÊıºÍ±ßÊı"<<endl;
+	cout<<"è¯·è¾“å…¥é‚»æ¥è¡¨çš„é¡¶ç‚¹æ•°å’Œè¾¹æ•°"<<endl;
 	cin>>A.verNumber>>A.arcNumber;
-	// Â¼Èë¸÷¸ö¶¥µãÃû³Æ
-	cout<<"·Ö±ğÊäÈë "<<A.verNumber<<" ¸ö¶¥µãÃû³Æ"<<endl;
+	// å½•å…¥å„ä¸ªé¡¶ç‚¹åç§°
+	cout<<"åˆ†åˆ«è¾“å…¥ "<<A.verNumber<<" ä¸ªé¡¶ç‚¹åç§°"<<endl;
 	for(int k = 0; k < A.verNumber; k++) {
 		cin>>A.vertices[k].name;
 		A.vertices[k].firstarc = NULL;
 	}
-	// Â¼Èë¸÷±ßÒÀÀµµÄÁ½¸ö¶¥µã
-	cout<<"·Ö±ğÊäÈë"<<A.arcNumber<<" ¸ö±ßµÄÁ½¶Ë¶¥µã"<<endl;
+	// å½•å…¥å„è¾¹ä¾èµ–çš„ä¸¤ä¸ªé¡¶ç‚¹
+	cout<<"åˆ†åˆ«è¾“å…¥"<<A.arcNumber<<" ä¸ªè¾¹çš„ä¸¤ç«¯é¡¶ç‚¹"<<endl;
 	for(int k = 0; k < A.arcNumber; k++) {
 		cin>>v1>>v2;
-		// ´Ó¶ÔÓ¦¶¥µãÖĞÈ¡³öĞòºÅ
+		// ä»å¯¹åº”é¡¶ç‚¹ä¸­å–å‡ºåºå·
 		if(LocationVex(A, v1) != -1)
 			i = LocationVex(A, v1);
 		else
-			cout<<"ÕÒ²»µ½"<<v1<<" Õâ¸ö¶¥µã"<<endl;
+			cout<<"æ‰¾ä¸åˆ°"<<v1<<" è¿™ä¸ªé¡¶ç‚¹"<<endl;
 
 		if(LocationVex(A, v2) != -1)
 			j = LocationVex(A, v2);
 		else
-			cout<<"ÕÒ²»µ½ "<<v2<<" Õâ¸ö¶¥µã"<<endl;
+			cout<<"æ‰¾ä¸åˆ° "<<v2<<" è¿™ä¸ªé¡¶ç‚¹"<<endl;
 
 		p1 = new ArcNode;
 		p2 = new ArcNode;
@@ -83,7 +83,7 @@ int CreateGraph(ALGraph &A)
 	}
 	return 0;
 }
-bool visited[MAX_NUMBER]; // ·ÃÎÊ±êÖ¾
+bool visited[MAX_NUMBER]; // è®¿é—®æ ‡å¿—
 void DFS(ALGraph A, int v)
 {
 	cout<<A.vertices[v].name<<" ";
@@ -104,16 +104,14 @@ void DFS(ALGraph A, int v)
 int main() {
 	ALGraph A;
 	CreateGraph(A);
-	cout<<"Éî¶ÈÓÅÏÈËÑË÷"<<endl;
+	cout<<"æ·±åº¦ä¼˜å…ˆæœç´¢"<<endl;
 	for(int i = 0; i < A.verNumber; i++)
 	{
-		cout<<endl<<"´Ó "<<A.vertices[i].name<<" ¿ªÊ¼ËÑË÷"<<endl;
+		cout<<endl<<"ä» "<<A.vertices[i].name<<" å¼€å§‹æœç´¢"<<endl;
 		DFS(A, i);
 		for(int j = 0; j < A.verNumber; j++)
-			visited[j] = false; // ·ÃÎÊ±êÖ¾
+			visited[j] = false; // è®¿é—®æ ‡å¿—
 	}
-	cout<<"¹ã¶ÈÓÅÏÈËÑË÷"<<endl;
-
-
+	cout<<"å¹¿åº¦ä¼˜å…ˆæœç´¢"<<endl;
 
 }
