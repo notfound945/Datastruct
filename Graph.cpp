@@ -7,6 +7,11 @@
 // Copyright   : 
 // Content : 数据结构：邻接表 (Adjacency List) 深度优先遍历
 // Description : Hello World in C++, Ansi-style
+// Explain : 
+//			Adjacency List 邻接表
+//			Adjacency Matrix 邻接矩阵
+//			Vertex 顶点
+//			
 //============================================================================
 
 #include "stdafx.h"
@@ -64,7 +69,7 @@ int Push(StackList &S, int data)
 }
 
 // 元素弹出栈
-int Pop(StackList &S, int data)
+int Pop(StackList &S, int &data)
 {
 	StackNode *temp; // 临时保存栈顶元素
 	if(S == NULL)
@@ -94,7 +99,7 @@ int CreateGraph(ALGraph &A)
 	char v1[10], v2[10]; // 表示边上的两个顶点
 	ArcNode *p1, *p2;
 	// 打开文件流
-	ifstream inputfile("C:\\Users\\1\\Desktop\\demo.txt");
+	ifstream inputfile("data1.txt");
 	cout<<"请输入邻接表的顶点数和边数"<<endl;
 	// 从文件录入数据
 	inputfile>>A.verNumber>>A.arcNumber;
@@ -109,7 +114,7 @@ int CreateGraph(ALGraph &A)
 		A.vertices[k].firstarc = NULL;
 	}
 	// 录入各边依赖的两个顶点
-	cout<<endl<<"分别输入"<<A.arcNumber<<" 个边的两端顶点"<<endl;
+	cout<<endl<<"分别输入 "<<A.arcNumber<<" 个边的两端顶点"<<endl;
 	for(int k = 0; k < A.arcNumber; k++)  
 	{
 		inputfile>>v1>>v2;
@@ -157,24 +162,26 @@ void DFS(ALGraph A, int v)
 	}
 }
 
-void BFS(ALGraph A,StackList &S, int v)
-{\
-	InitStack(S);
-	cout<<A.vertices[v].name<<" ";
+void BFS(ALGraph A, int v)
+{	
+	int data;
+	ArcNode *p = new ArcNode;
+	p = A.vertices[v].firstarc;
+	StackList S; // 定义链栈
+	InitStack(S); // 初始化链栈
+	// 将所有访问标志置为 false
+	for(int j = 0; j < A.verNumber; j++)
+		visited[j] = false; // 重置访问标志为 flag
+	cout<<v<<" ";
 	visited[v] = true;
-	for(int i = 0; i < A.verNumber; i++)
+	while(!S)
 	{
-		if(!visited[i])
+		Pop(S, data);
+		if(!A.vertices[data].firstarc->nextarc)
 		{
-			visited[v] = true;
-			cout<<A.vertices[v].name<<" ";
-			Push(S, i);
-			while(S)
-			{
-				
-			}
 
-	}
+		}
+		
 	}
 
 }
@@ -182,14 +189,15 @@ void BFS(ALGraph A,StackList &S, int v)
 // 写入文件数据
 int Write()
 {
-	ofstream outputfile("C:\\Users\\1\\Desktop\\demo.txt");
-	if(!outputfile)
+	ofstream outputfile1("data1.txt");
+	ofstream outputfile2("data2.txt");
+	if(!outputfile1 && !outputfile2)
 	{
 		cout<<"文件创建失败，请检查是否有写入权限"<<endl;
 		return -1;
 	} else {
 		cout<<"文件创建成功，写入数据"<<endl;
-		outputfile<<
+		outputfile1<<
 			"5 6 "
 			"v1 v2 v3 v4 v5 "
 			"v1 v2 "
@@ -198,28 +206,50 @@ int Write()
 			"v2 v5 "
 			"v3 v5 "
 			"v3 v4 ";
+		outputfile2<<
+			"8 9 "
+			"v1 v2 v3 v4 v5 v6 v7 v8 "
+			"v1 v2 "
+			"v1 v3 "
+			"v3 v7 "
+			"v6 v7 "
+			"v3 v6 "
+			"v2 v4 "
+			"v2 v5 "
+			"v4 v8 "
+			"v5 v8 ";
+		outputfile1.close();
+		outputfile2.close();
 		return 0;
 	}
 }
-// 全局统一输入文件
 
+// 打印邻接链表
+void Print(ALGraph A)
+{
+	cout<<"打印邻接链表内容"<<endl;
+	for(int i = 0; i < A.verNumber; i++)
+	{
+		cout<<A.vertices[i].name;
+		while(A.vertices[i].firstarc)
+		{
+			cout<<" --> "<<A.vertices[A.vertices[i].firstarc->adjvex].name;
+			A.vertices[i].firstarc = A.vertices[i].firstarc->nextarc;
+		}
+		cout<<endl;
+	}
+}
+
+// 主函数入口
 int main() {
 	
 	// 建立并初始化栈
 	char data[20];
-	StackList S;
-
 	ALGraph A;
 	// 写入文件
 	Write();
 	CreateGraph(A);
-	cout<<"测试打印"<<endl;
-	while(A.vertices[0].firstarc)
-	{
-		cout<<" --> "<<A.vertices[A.vertices[0].firstarc->adjvex].name;
-		A.vertices[0].firstarc = A.vertices[0].firstarc->nextarc;
-		
-	}
+	Print(A);
 	cout<<"深度优先搜索"<<endl;
 	for(int i = 0; i < A.verNumber; i++)
 	{
@@ -229,9 +259,6 @@ int main() {
 			visited[j] = false; // 重置访问标志为 flag
 	}
 	cout<<endl<<"广度优先搜索"<<endl;
-
-	for(int j = 0; j < A.verNumber; j++)
-			visited[j] = false; // 重置访问标志为 flag
-	BFS(A, S, 0);
+	BFS(A, 0);
 
 }
