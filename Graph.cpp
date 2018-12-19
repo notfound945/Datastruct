@@ -1,11 +1,11 @@
-// Graph.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// Graph.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 //============================================================================
 // Name        : Graph.cpp
 // Author      : PHL
 // Version     :
 // Copyright   : 
-// Content : Êı¾İ½á¹¹£ºÁÚ½Ó±í (Adjacency List) Éî¶ÈÓÅÏÈ±éÀú
+// Content : æ•°æ®ç»“æ„ï¼šé‚»æ¥è¡¨ (Adjacency List) æ·±åº¦ä¼˜å…ˆéå†
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
@@ -20,63 +20,63 @@ using namespace std;
 #include <string.h>
 using namespace std;
 
-#define MAX_NUMBER 100
+#define MAX_NUMBER 50
 typedef int ElemType ;
 
-// ±ß±í (±ß½áµã) ´¢´æËùÓĞÓëĞ©¶¥µãÏà¹ØµÄ±ß
+// è¾¹è¡¨ (è¾¹ç»“ç‚¹) å‚¨å­˜æ‰€æœ‰ä¸äº›é¡¶ç‚¹ç›¸å…³çš„è¾¹
 typedef struct ArcNode {
-	int adjvex; //¸Ã±ßËùÖ¸ÏòµÄ¶¥µãÎ»ÖÃ
-	struct ArcNode *nextarc; // ÏÂÒ»Ìõ±ßµÄµØÖ·
+	int adjvex; //è¯¥è¾¹æ‰€æŒ‡å‘çš„é¡¶ç‚¹ä½ç½®
+	struct ArcNode *nextarc; // ä¸‹ä¸€æ¡è¾¹çš„åœ°å€
 }ArcNode;
 
-// ¶¥µãĞÅÏ¢
+// é¡¶ç‚¹ä¿¡æ¯
 typedef struct VNode {
-	char name[10]; // ¶¥µãÊı¾İÓò
-	ArcNode *firstarc; // Ö¸ÏòÓë´Ë¶¥µãÁ¬½ÓµÚÒ»Ìõ±ßµÄÖ¸Õë
+	char name[10]; // é¡¶ç‚¹æ•°æ®åŸŸ
+	ArcNode *firstarc; // æŒ‡å‘ä¸æ­¤é¡¶ç‚¹è¿æ¥ç¬¬ä¸€æ¡è¾¹çš„æŒ‡é’ˆ
 }VNode, AdjList[MAX_NUMBER];
 
-// ÁÚ½Ó±í
+// é‚»æ¥è¡¨
 typedef struct ALGraph{
 	AdjList vertices;
 	int verNumber, arcNumber;
 }ALGraph;
 
-// Á´Õ»
+// é“¾æ ˆ
 typedef struct Stack {
-	char data[10];
+	int data;
 	struct Stack *next;
 }StackNode, *StackList;
 
-// ³õÊ¼»¯Õ»
+// åˆå§‹åŒ–æ ˆ
 void InitStack(StackList &S)
 {
 	S = NULL;
 }
 
-// ÔªËØÑ¹ÈëÕ»
-int Push(StackList &S, char data[])
+// å…ƒç´ å‹å…¥æ ˆ
+int Push(StackList &S, int data)
 {
 	StackNode *p = new StackNode;
-	strcpy(p->data, data);
+	p->data = data;
 	p->next = S;
 	S = p;
 	return 0;
 }
 
-// ÔªËØµ¯³öÕ»
-int Pop(StackList &S, char data[])
+// å…ƒç´ å¼¹å‡ºæ ˆ
+int Pop(StackList &S, int data)
 {
-	StackNode *temp; // ÁÙÊ±±£´æÕ»¶¥ÔªËØ
+	StackNode *temp; // ä¸´æ—¶ä¿å­˜æ ˆé¡¶å…ƒç´ 
 	if(S == NULL)
 		return -1;
-	strcpy(data, S->data);
+	data = S->data;
 	temp = S;
 	S = S->next;
 	delete temp;
 	return 0;
 }
 
-// ¶¨Î»¶¥µãĞòºÅ
+// å®šä½é¡¶ç‚¹åºå·
 int LocationVex(ALGraph A, char ver[10] )
 {
 	for(int l = 0; l < A.verNumber; l++)
@@ -87,43 +87,44 @@ int LocationVex(ALGraph A, char ver[10] )
 	return -1;
 }
 
-// ÀûÓÃÁÚ½Ó±í±íÊ¾·¨´´½¨ÎŞÏòÍ¼
+// åˆ©ç”¨é‚»æ¥è¡¨è¡¨ç¤ºæ³•åˆ›å»ºæ— å‘å›¾
 int CreateGraph(ALGraph &A)
 {
 	int i = 0, j = 0;
-	char v1[10], v2[10]; // ±íÊ¾±ßÉÏµÄÁ½¸ö¶¥µã
+	char v1[10], v2[10]; // è¡¨ç¤ºè¾¹ä¸Šçš„ä¸¤ä¸ªé¡¶ç‚¹
 	ArcNode *p1, *p2;
-	// ´ò¿ªÎÄ¼şÁ÷
+	// æ‰“å¼€æ–‡ä»¶æµ
 	ifstream inputfile("C:\\Users\\1\\Desktop\\demo.txt");
-	cout<<"ÇëÊäÈëÁÚ½Ó±íµÄ¶¥µãÊıºÍ±ßÊı"<<endl;
-	// ´ÓÎÄ¼şÂ¼ÈëÊı¾İ
+	cout<<"è¯·è¾“å…¥é‚»æ¥è¡¨çš„é¡¶ç‚¹æ•°å’Œè¾¹æ•°"<<endl;
+	// ä»æ–‡ä»¶å½•å…¥æ•°æ®
 	inputfile>>A.verNumber>>A.arcNumber;
-	// ´òÓ¡Â¼ÈëÊı¾İ
+	// æ‰“å°å½•å…¥æ•°æ®
 	cout<<A.verNumber<<" "<<A.arcNumber<<endl;
 	//cin>>A.verNumber>>A.arcNumber;
-	// Â¼Èë¸÷¸ö¶¥µãÃû³Æ
-	cout<<"·Ö±ğÊäÈë "<<A.verNumber<<" ¸ö¶¥µãÃû³Æ"<<endl;
+	// å½•å…¥å„ä¸ªé¡¶ç‚¹åç§°
+	cout<<"åˆ†åˆ«è¾“å…¥ "<<A.verNumber<<" ä¸ªé¡¶ç‚¹åç§°"<<endl;
 	for(int k = 0; k < A.verNumber; k++) {
 		inputfile>>A.vertices[k].name;
 		cout<<A.vertices[k].name<<" ";
 		A.vertices[k].firstarc = NULL;
 	}
-	// Â¼Èë¸÷±ßÒÀÀµµÄÁ½¸ö¶¥µã
-	cout<<endl<<"·Ö±ğÊäÈë"<<A.arcNumber<<" ¸ö±ßµÄÁ½¶Ë¶¥µã"<<endl;
-	for(int k = 0; k < A.arcNumber; k++) {
+	// å½•å…¥å„è¾¹ä¾èµ–çš„ä¸¤ä¸ªé¡¶ç‚¹
+	cout<<endl<<"åˆ†åˆ«è¾“å…¥"<<A.arcNumber<<" ä¸ªè¾¹çš„ä¸¤ç«¯é¡¶ç‚¹"<<endl;
+	for(int k = 0; k < A.arcNumber; k++)  
+	{
 		inputfile>>v1>>v2;
-		// ´òÓ¡ÎÄ¼şÂ¼ÈëÊı¾İ
+		// æ‰“å°æ–‡ä»¶å½•å…¥æ•°æ®
 		cout<<v1<<" "<<v2<<endl;
-		// ´Ó¶ÔÓ¦¶¥µãÖĞÈ¡³öĞòºÅ
+		// ä»å¯¹åº”é¡¶ç‚¹ä¸­å–å‡ºåºå·
 		if(LocationVex(A, v1) != -1)
 			i = LocationVex(A, v1);
 		else
-			cout<<"ÕÒ²»µ½"<<v1<<" Õâ¸ö¶¥µã"<<endl;
+			cout<<"æ‰¾ä¸åˆ°"<<v1<<" è¿™ä¸ªé¡¶ç‚¹"<<endl;
 
 		if(LocationVex(A, v2) != -1)
 			j = LocationVex(A, v2);
 		else
-			cout<<"ÕÒ²»µ½ "<<v2<<" Õâ¸ö¶¥µã"<<endl;
+			cout<<"æ‰¾ä¸åˆ° "<<v2<<" è¿™ä¸ªé¡¶ç‚¹"<<endl;
 
 		p1 = new ArcNode;
 		p2 = new ArcNode;
@@ -134,11 +135,11 @@ int CreateGraph(ALGraph &A)
 		p2->nextarc = A.vertices[i].firstarc;
 		A.vertices[i].firstarc = p2;
 	}
-	// ¹Ø±ÕÎÄ¼şÁ÷
+	// å…³é—­æ–‡ä»¶æµ
 	inputfile.close();
 	return 0;
 }
-bool visited[MAX_NUMBER]; // ·ÃÎÊ±êÖ¾
+bool visited[MAX_NUMBER]; // è®¿é—®æ ‡å¿—
 void DFS(ALGraph A, int v)
 {
 	cout<<A.vertices[v].name<<" ";
@@ -157,25 +158,37 @@ void DFS(ALGraph A, int v)
 }
 
 void BFS(ALGraph A,StackList &S, int v)
-{
+{\
+	InitStack(S);
 	cout<<A.vertices[v].name<<" ";
 	visited[v] = true;
-	Push(S, A.vertices[v].name);
-	while(S);
-	
+	for(int i = 0; i < A.verNumber; i++)
+	{
+		if(!visited[i])
+		{
+			visited[v] = true;
+			cout<<A.vertices[v].name<<" ";
+			Push(S, i);
+			while(S)
+			{
+				
+			}
+
+	}
+	}
 
 }
 
-// Ğ´ÈëÎÄ¼şÊı¾İ
+// å†™å…¥æ–‡ä»¶æ•°æ®
 int Write()
 {
 	ofstream outputfile("C:\\Users\\1\\Desktop\\demo.txt");
 	if(!outputfile)
 	{
-		cout<<"ÎÄ¼ş´´½¨Ê§°Ü£¬Çë¼ì²éÊÇ·ñÓĞĞ´ÈëÈ¨ÏŞ"<<endl;
+		cout<<"æ–‡ä»¶åˆ›å»ºå¤±è´¥ï¼Œè¯·æ£€æŸ¥æ˜¯å¦æœ‰å†™å…¥æƒé™"<<endl;
 		return -1;
 	} else {
-		cout<<"ÎÄ¼ş´´½¨³É¹¦£¬Ğ´ÈëÊı¾İ"<<endl;
+		cout<<"æ–‡ä»¶åˆ›å»ºæˆåŠŸï¼Œå†™å…¥æ•°æ®"<<endl;
 		outputfile<<
 			"5 6 "
 			"v1 v2 v3 v4 v5 "
@@ -188,30 +201,37 @@ int Write()
 		return 0;
 	}
 }
-// È«¾ÖÍ³Ò»ÊäÈëÎÄ¼ş
+// å…¨å±€ç»Ÿä¸€è¾“å…¥æ–‡ä»¶
 
 int main() {
 	
-	// ½¨Á¢²¢³õÊ¼»¯Õ»
+	// å»ºç«‹å¹¶åˆå§‹åŒ–æ ˆ
 	char data[20];
 	StackList S;
-	InitStack(S);
+
 	ALGraph A;
-	// Ğ´ÈëÎÄ¼ş
+	// å†™å…¥æ–‡ä»¶
 	Write();
 	CreateGraph(A);
-	cout<<"Éî¶ÈÓÅÏÈËÑË÷"<<endl;
+	cout<<"æµ‹è¯•æ‰“å°"<<endl;
+	while(A.vertices[0].firstarc)
+	{
+		cout<<" --> "<<A.vertices[A.vertices[0].firstarc->adjvex].name;
+		A.vertices[0].firstarc = A.vertices[0].firstarc->nextarc;
+		
+	}
+	cout<<"æ·±åº¦ä¼˜å…ˆæœç´¢"<<endl;
 	for(int i = 0; i < A.verNumber; i++)
 	{
-		cout<<endl<<"´Ó "<<A.vertices[i].name<<" ¿ªÊ¼ËÑË÷"<<endl;
+		cout<<endl<<"ä» "<<A.vertices[i].name<<" å¼€å§‹æœç´¢"<<endl;
 		DFS(A, i);
 		for(int j = 0; j < A.verNumber; j++)
-			visited[j] = false; // ÖØÖÃ·ÃÎÊ±êÖ¾Îª flag
+			visited[j] = false; // é‡ç½®è®¿é—®æ ‡å¿—ä¸º flag
 	}
-	cout<<endl<<"¹ã¶ÈÓÅÏÈËÑË÷"<<endl;
+	cout<<endl<<"å¹¿åº¦ä¼˜å…ˆæœç´¢"<<endl;
 
 	for(int j = 0; j < A.verNumber; j++)
-			visited[j] = false; // ÖØÖÃ·ÃÎÊ±êÖ¾Îª flag
+			visited[j] = false; // é‡ç½®è®¿é—®æ ‡å¿—ä¸º flag
 	BFS(A, S, 0);
 
 }
