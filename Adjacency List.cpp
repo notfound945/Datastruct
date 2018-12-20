@@ -1,6 +1,4 @@
 
-// Graph.cpp : 定义控制台应用程序的入口点。
-//
 //============================================================================
 // Name        : Adjacency List.cpp
 // Author      : PHL
@@ -88,7 +86,7 @@ int LocationVex(ALGraph A, char ver[10] )
 	for(int l = 0; l < A.verNumber; l++)
 	{
 		if(strcmp(ver, A.vertices[l].name) == 0)
-			return l; // 顶点索引地址
+			return l; // 返回顶点索引地址
 	}
 	return -1;
 }
