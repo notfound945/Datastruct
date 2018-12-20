@@ -1,11 +1,16 @@
 // Graph.cpp : 定义控制台应用程序的入口点。
 //
+
+#include "stdafx.h"
+
+// Graph.cpp : 定义控制台应用程序的入口点。
+//
 //============================================================================
-// Name        : Graph.cpp
+// Name        : Adjacency List.cpp
 // Author      : PHL
 // Version     :
 // Copyright   : 
-// Content : 数据结构：邻接表 (Adjacency List) 深度优先遍历
+// Content : 数据结构：图 邻接表 (Adjacency List) 深度优先遍历广度优先遍历
 // Description : Hello World in C++, Ansi-style
 // Explain : 
 //			Adjacency List 邻接表
@@ -81,13 +86,13 @@ int Pop(StackList &S, int &data)
 	return 0;
 }
 
-// 定位顶点序号
+// 获取顶点索引地址
 int LocationVex(ALGraph A, char ver[10] )
 {
 	for(int l = 0; l < A.verNumber; l++)
 	{
 		if(strcmp(ver, A.vertices[l].name) == 0)
-			return l;
+			return l; // 顶点索引地址
 	}
 	return -1;
 }
@@ -98,14 +103,13 @@ int CreateGraph(ALGraph &A)
 	int i = 0, j = 0;
 	char v1[10], v2[10]; // 表示边上的两个顶点
 	ArcNode *p1, *p2;
-	// 打开文件流
+	// 打开输入文件流
 	ifstream inputfile("data1.txt");
 	cout<<"请输入邻接表的顶点数和边数"<<endl;
 	// 从文件录入数据
 	inputfile>>A.verNumber>>A.arcNumber;
 	// 打印录入数据
 	cout<<A.verNumber<<" "<<A.arcNumber<<endl;
-	//cin>>A.verNumber>>A.arcNumber;
 	// 录入各个顶点名称
 	cout<<"分别输入 "<<A.verNumber<<" 个顶点名称"<<endl;
 	for(int k = 0; k < A.verNumber; k++) {
@@ -140,55 +144,69 @@ int CreateGraph(ALGraph &A)
 		p2->nextarc = A.vertices[i].firstarc;
 		A.vertices[i].firstarc = p2;
 	}
-	// 关闭文件流
+	// 关闭输入文件流
 	inputfile.close();
 	return 0;
 }
-bool visited[MAX_NUMBER]; // 访问标志
+
+bool visited[MAX_NUMBER]; // 顶点访问标志
+// 深度优先遍历 递归法
 void DFS(ALGraph A, int v)
 {
-	cout<<A.vertices[v].name<<" ";
-	visited[v] = true;
+	cout<<A.vertices[v].name<<" "; // 打印遍历顶点名称
+	visited[v] = true; // 标记已被访问
 	ArcNode *p = new ArcNode;
-	p = A.vertices[v].firstarc;
+	p = A.vertices[v].firstarc; // p指向当前顶点的边表第一个节点
+	// p指针不为空
 	while(p)
 	{
 		int w = p->adjvex;
+		// 判断是否被访问
 		if(!visited[w])
 		{
-			DFS(A, w);
+			DFS(A, w); // 递归操作
 		}
-		p = p->nextarc;
+		p = p->nextarc; // p指向当前顶点的下一个边表节点
 	}
 }
-
+// 广度优先遍历
 void BFS(ALGraph A, int v)
 {	
-	int data;
-	ArcNode *p = new ArcNode;
-	p = A.vertices[v].firstarc;
+	int data; // 记录每次弹出栈元素
+	ArcNode *p = new ArcNode; // 临时当前顶点边表节点指针
 	StackList S; // 定义链栈
 	InitStack(S); // 初始化链栈
 	// 将所有访问标志置为 false
 	for(int j = 0; j < A.verNumber; j++)
-		visited[j] = false; // 重置访问标志为 flag
-	cout<<v<<" ";
-	visited[v] = true;
-	while(!S)
+		visited[j] = false; 
+	// 从 A.vertices[v] 顶点为起点开始遍历
+	cout<<A.vertices[v].name<<" ";
+	visited[v] = true; // 标记已被访问
+	Push(S, v); // 压入初始顶点索引地址至链栈
+	// 条件 链栈不为空
+	while(S) 
 	{
-		Pop(S, data);
-		if(!A.vertices[data].firstarc->nextarc)
-		{
-
+		Pop(S, data); // 弹出链栈元素
+		p = A.vertices[data].firstarc; // p指向当前顶点的边表第一个节点
+		// 条件 p指针不为空
+		while(p) 
+		{ 
+			// 判断是否被访问
+			if(!visited[p->adjvex])
+			{
+				cout<<A.vertices[p->adjvex].name<<" "; // 打印顶点名称
+				visited[p->adjvex] = true; // 标记已被访问
+				Push(S, p->adjvex); // 将当前顶点索引地址压入栈
+			}
+			p = p->nextarc; // p指针指向下一个节点
 		}
-		
 	}
-
 }
 
 // 写入文件数据
 int Write()
 {
+	// 定义两个输出文件流
 	ofstream outputfile1("data1.txt");
 	ofstream outputfile2("data2.txt");
 	if(!outputfile1 && !outputfile2)
@@ -218,6 +236,7 @@ int Write()
 			"v2 v5 "
 			"v4 v8 "
 			"v5 v8 ";
+		// 关闭输出文件流
 		outputfile1.close();
 		outputfile2.close();
 		return 0;
@@ -227,14 +246,16 @@ int Write()
 // 打印邻接链表
 void Print(ALGraph A)
 {
-	cout<<"打印邻接链表内容"<<endl;
+	ArcNode *p = new ArcNode;
+	cout<<"打印邻接表"<<endl;
 	for(int i = 0; i < A.verNumber; i++)
 	{
+		p = A.vertices[i].firstarc; // p指向当前顶点的边表第一个节点
 		cout<<A.vertices[i].name;
-		while(A.vertices[i].firstarc)
+		while(p)
 		{
-			cout<<" --> "<<A.vertices[A.vertices[i].firstarc->adjvex].name;
-			A.vertices[i].firstarc = A.vertices[i].firstarc->nextarc;
+			cout<<" --> "<<A.vertices[p->adjvex].name;
+			p = p->nextarc;
 		}
 		cout<<endl;
 	}
@@ -242,15 +263,12 @@ void Print(ALGraph A)
 
 // 主函数入口
 int main() {
-	
-	// 建立并初始化栈
-	char data[20];
-	ALGraph A;
-	// 写入文件
-	Write();
-	CreateGraph(A);
-	Print(A);
+	ALGraph A; // 定义图
+	Write(); // 写入文件
+	CreateGraph(A); //创建图
+	Print(A); // 打印图
 	cout<<"深度优先搜索"<<endl;
+	// 尝试优先遍历
 	for(int i = 0; i < A.verNumber; i++)
 	{
 		cout<<endl<<"从 "<<A.vertices[i].name<<" 开始搜索"<<endl;
@@ -258,7 +276,13 @@ int main() {
 		for(int j = 0; j < A.verNumber; j++)
 			visited[j] = false; // 重置访问标志为 flag
 	}
-	cout<<endl<<"广度优先搜索"<<endl;
-	BFS(A, 0);
 
+	cout<<endl<<"广度优先搜索"<<endl;
+	// 广度优先遍历
+	for(int i = 0; i < A.verNumber; i++)
+	{
+		cout<<"从 "<<A.vertices[i].name<<" 开始搜索"<<endl;
+		BFS(A, i);
+		cout<<endl;
+	}
 }
