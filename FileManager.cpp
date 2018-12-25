@@ -19,7 +19,7 @@ typedef struct DirectoryNode
 	char dirname[50];
 	FileNode *filelist;
 	DirectoryNode *directorylist;
-}DirectoryNode, DirectoryLink;
+}DirectoryNode, *DirectoryLink;
 
 // 写出文件
 void Write()
@@ -52,7 +52,7 @@ void Read()
 
 int main()
 {
-	DirectoryNode *Dir = new DirectoryNode;
+	DirectoryLink Dir = new DirectoryNode;
 	strcpy(Dir->dirname, "root");
 	strcpy(Dir->filelist->filename, "java");
 	Dir->filelist->filesize = 20;
