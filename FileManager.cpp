@@ -4,53 +4,51 @@
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <string>
 
 using namespace std;
 
 typedef struct FileNode {
-	char fileName[20];
+	char fileName[50];
 	float fileSize;
 	struct FileNode *fileNext;
 }FileNode, *FileList;
 
 typedef struct FolderNode {
-	char folderName[20];
+	char folderName[50];
 	struct FolderNode *folderNext; // 下级目录文件
 	struct FolderNode *next; // 同级目录文件
 	struct FileNode *fileNext; // 同级文件
 }FolderNode, *FolderList;
 
-void CreateFile(FolderList &folderList)
+FolderList AllDirectory = new FolderNode; // 全局目录指针
+
+void CreateFile(FolderList &folderList, char fileName[], float fileSize)
 {
 	FolderNode *p = new FolderNode; // 
 	FileNode *q = new FileNode; // 新增文件节点
 	p = folderList;
-	cout<<"输入文件名"<<endl;
-	cin>>q->fileName;
-	cout<<"输入文件大小"<<endl;
-	cin>>q->fileSize;
+	strcpy(q->fileName, fileName);
+	q->fileSize = fileSize;
 	q->fileNext = p->fileNext;
 	p->fileNext = q;
 }
 
-void CreateFolder(FolderList &folderList)
+void CreateFolder(FolderList &folderList, char folderName[])
 {
 	FolderNode *p = new FolderNode;
 	FolderNode *q = new FolderNode;
 	p = folderList;
-	cout<<"输入文件夹名"<<endl;
-	cin>>q->folderName;
+	strcpy(q->folderName, folderName);
 	q->folderNext = p->folderNext;
 	p->folderNext = q;
 }
 
-void Init(FolderList &folderList)
+void NextDirectory(FolderList &folderList)
 {
-	folderList->fileNext = NULL;
-	folderList->folderNext = NULL;
-	folderList->next = NULL;
+//	folderList->folderNext = folderList->folderNext->folderNext;
 }
-
 void Print(FolderList &folderList)
 {
 	FolderNode *folderTemp = new FolderNode;
@@ -58,29 +56,90 @@ void Print(FolderList &folderList)
 	folderTemp = folderList->folderNext;
 	fileTemp = folderList->fileNext;
 	cout<<"文件列表输出"<<endl;
-	cout<<"========================="<<endl;
+	cout<<"当前目录: ./"<<folderList->folderName<<endl;
+	cout<<"==================================================="<<endl;
+	
 	while(folderTemp)
 	{
+		cout.setf(ios::left);
+		cout.width(20);
 		cout<<"./"<<folderTemp->folderName<<endl;
 		folderTemp = folderTemp->folderNext;
 	}
 	while(fileTemp)
 	{
-		cout<<fileTemp->fileName<<" "<<fileTemp->fileSize<<endl;
+		cout.setf(ios::left);
+		cout.width(20);
+		cout<<"  "<<fileTemp->fileName;
+		cout.setf(ios::left);
+		cout.width(20);
+		cout<<"  "<<fileTemp->fileSize<<endl;
 		fileTemp = fileTemp->fileNext;
 
+	}
+}
+
+void Init(FolderList &folderList)
+{
+	strcpy(folderList->folderName, "root");
+	folderList->fileNext = NULL;
+	folderList->folderNext = NULL;
+	folderList->next = NULL;
+}
+
+// 写出文件
+void Write()
+{
+	ofstream outputfile("data.txt");
+	if(!outputfile)
+		cout<<"尝试打开文件流失败"<<endl;
+	outputfile<<"Something_like_you.mp3 53.32 Seve.mp3 23.4 java python";
+	outputfile.close();
+}
+
+// 读取文件
+void Read(FolderList &folderList)
+{
+	char fileName[50], folderName[50];
+	float fileSize;
+	ifstream inputfile("data.txt");
+	if(!inputfile)
+		cout<<"尝试读取文件流失败"<<endl;
+	while(!inputfile.eof())
+	{
+		inputfile>>fileName;
+		inputfile>>fileSize;
+		cout<<"read "<<fileName<<endl;
+		cout<<"read "<<fileSize<<endl;
+
+		CreateFile(folderList, fileName, fileSize);
+		
+		inputfile>>fileName;
+		inputfile>>fileSize;
+		cout<<"read "<<fileName<<endl;
+		cout<<"read "<<fileSize<<endl;
+		CreateFile(folderList, fileName, fileSize);
+
+		inputfile>>folderName;
+		CreateFolder(folderList, folderName);
+
+		inputfile>>folderName;
+		CreateFolder(folderList, folderName);
 	}
 }
 
 int main()
 {
 	FolderList root = new FolderNode; // 表根目录
+	AllDirectory = root;
 	Init(root);
-	CreateFile(root);
-	CreateFile(root);
-	CreateFolder(root);
-	CreateFolder(root);
+	Write();
+	Read(root);
+	CreateFile(root, "helloworld", 3.42);
 	Print(root);
+	NextDirectory(root);
+	//Print(root);
 	return 0;
 }
+
 
