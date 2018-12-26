@@ -1,94 +1,266 @@
-// FileManager.cpp : 定义控制台应用程序的入口点。
+// FileManagerTool.cpp : 定义控制台应用程序的入口点。
 //
 
 #include "stdafx.h"
 #include <iostream>
 #include <string.h>
+#include <fstream>
+#include <stdlib.h>
 
 using namespace std;
 
 typedef struct FileNode
 {
-	char filename[30];
-	int filesize;
+	char filename[20];
+	float filesize;
+	char attribute[5];
 	FileNode *next;
 }FileNode;
 
-typedef struct FolderNode
+typedef struct FolderNode 
 {
 	char foldername[20];
-	FolderNode *folderlist;
 	FileNode *filelist;
-}FolderNode, *FolderLinkList;
+	FolderNode *folderlist;
+}FolderNode, *FolderLink;
 
-
-
-void Init(FolderLinkList &folder)
+// 初始化文件目录
+void Init(FolderLink &folder)
 {
 	strcpy(folder->foldername, "root");
-	folder->filelist = NULL;
 	folder->folderlist = NULL;
+	folder->filelist = NULL;
 }
 
-void CreateFolder(FolderLinkList &folder)
+// 查看当前目录
+void PrintCurrent(FolderLink &folder)
 {
+	cout<<"========="<<endl;
+	cout<<"查看当前目录"<<endl;
+	cout<<"===文件名===\t\t===文件大小===\t\t===文件类型==="<<endl;
+	FolderNode *tempfolder = folder->folderlist;
+	FileNode *tempfile = folder->filelist;
+	if(!tempfolder && !folder->filelist)
+		cout<<endl<<"==目录为空=="<<endl<<endl;
+	while(tempfolder)
+	{
+		cout<<"./"<<tempfolder->foldername<<endl;
+		tempfolder = tempfolder->folderlist;
+	}
+	while(tempfile)
+	{
+		cout<<tempfile->filename<<"\t\t\t"<<tempfile->filesize<<endl;
+		tempfile = tempfile->next;
+	}
+	cout<<"任意键返回主菜单..."<<endl;
+	system("pause>null");
+}
+
+// 查看下层文件
+void PrintLower(FolderLink &folder)
+{
+	cout<<"======="<<endl;
+	cout<<"查看下层文件"<<endl;
+}
+
+// 返回上层目录
+void ReturnUper(FolderLink &folder)
+{
+	cout<<"========"<<endl;
+	cout<<"返回上层目录"<<endl;
+}
+
+// 返回根目录
+void ReturnRoot(FolderLink &folder)
+{
+	cout<<"========"<<endl;
+	cout<<"返回根目录"<<endl;
+}
+
+// 新建文件
+void NewFile(FolderLink &folder)
+{
+	char option[10]; // 判断是否添加文件
+	cout<<"新建文件"<<endl;
+	FileNode *insertNode = new FileNode;
+	cout<<"========="<<endl;
+	cout<<"请输入新建文件信息"<<endl;
+	cout<<"文件名:";
+	cin>>insertNode->filename;
+	cout<<"文件大小:";
+	cin>>insertNode->filesize;
+	insertNode->next = folder->filelist;
+	folder->filelist = insertNode;
+	cout<<"文件新建成功，是否继续添加？y/n"<<endl;
+	cin>>option;
+	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+		NewFile(folder);
+}
+
+// 新建下层目录
+void NewFolder(FolderLink &folder)
+{
+	char option[10]; // 判断是否继续添加文件夹
+	cout<<"=========="<<endl;
+	cout<<"新建下层目录"<<endl;
 	FolderNode *tempNode = new FolderNode;
 	FolderNode *insertNode = new FolderNode;
 	tempNode = folder;
-
-	// 指向链表结尾处 保证每次插入元素在尾部
-	while(tempNode->folderlist)
-		tempNode = tempNode->folderlist;
-	// 从键盘中录入信息
-	cout<<"输入文件夹名"<<endl;
+	cout<<"输入文件夹相关信息"<<endl;
+	cout<<"文件名:";
 	cin>>insertNode->foldername;
 	insertNode->folderlist = tempNode->folderlist;
 	tempNode->folderlist = insertNode;
-}
-
-// 建立文件
-void CreateFile(FolderLinkList &folder)
-{
-	FileNode *insertfile = new FileNode;
-	// 从键盘中录入文件信息
-	cout<<"输入文件名"<<endl;
-	cin>>insertfile->filename;
-	insertfile->next = folder->filelist;
-	folder->filelist = insertfile;
+	cout<<"文件夹新建成功，是否继续添加？y/n"<<endl;
+	cin>>option;
+	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+		NewFolder(folder);
 
 }
 
-void Print(FolderLinkList &folder)
+// 更新文件信息
+void UpdateFile(FolderLink &folder)
 {
-	FolderNode *tempNode = new FolderNode;
-	FileNode *tempFile = new FileNode;
-	cout<<"当前目录位置 "<<folder->foldername<<endl;
-	tempNode = folder->folderlist;
-	tempFile = folder->filelist;
-	cout<<"============"<<endl;
-	while(tempNode)
+	cout<<"更新文件信息"<<endl;
+}
+
+// 删除文件
+void DeleteFile(FolderLink &folder)
+{
+	int serial = 0; // 记录目标序号
+	bool flag = false; // 访问标志
+	char filename[20];
+	char option[10];
+	cout<<"=========="<<endl;
+	cout<<"删除文件"<<endl;
+	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
+	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
+	if(!tempfile)
 	{
-		cout<<"./"<<tempNode->foldername<<endl;
-		
-		tempNode = tempNode->folderlist;
+		cout<<"目录为空，不能进行查找删除操作"<<endl;
+		cout<<"任意键返回菜单"<<endl;
+		system("pause>>null");
+		return;
 	}
-	while(tempFile)
+	cout<<"请输入要删除的文件名:";
+	cin>>filename;
+	while(tempfile)
 	{
-		cout<<tempFile->filename<<endl;
-		tempFile = tempFile->next;
+		cout<<tempfile->filename<<endl;
+		if(strcmp(tempfile->filename, filename) == 0)
+		{
+			serial++;
+			tempfile = tempfile->next;
+			flag = serial;
+			break;
+		} else {
+			serial++;	
+			tempfile = tempfile->next;
+		}
+	}
+		cout<<"result "<<serial<<endl;
+		if(flag == true)
+		{
+			cout<<"找到此文件"<<endl;
+			cout<<"是否删除？"<<endl;
+			cin>>option;	
+			if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+			{
+				// 遍历链表删除操作
+				FileNode *tempfile = folder->filelist; // 用于遍历链表信息
+				while(tempfile)
+				{
+
+				}
+			} else {
+				cout<<"文件已保留"<<endl;
+				cout<<"任意键返主菜单"<<endl;
+				return;
+			}
+		} else {
+			cout<<"未找到此文件"<<endl;
+		}
+	cout<<"是否继续删除操作？y/n"<<endl;
+	cin>>option;
+	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+	{
+		DeleteFile(folder);
 	}
 }
 
-int main()
+// 显示菜单
+void ShowMenu(FolderLink &folder)
 {
-	FolderLinkList folder = new FolderNode;
-	Init(folder);
-	CreateFolder(folder);
-	//CreateFolder(folder);
+	cout<<endl<<"\t\t=========================="<<endl;
+	cout<<"\t\t\t文件管理助手"<<endl;
+	cout<<endl<<"\t\t=========================="<<endl;
+	cout<<"\t\t|    1.查看当前目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    2.显示下层目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    3.返回上层目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    4.返回根目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    5.新建文件    \t|"<<endl<<endl;
+	cout<<"\t\t|    6.新增下层目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    7.更新文件信息    \t|"<<endl<<endl;
+	cout<<"\t\t|    8.删除文件信息    \t|"<<endl<<endl;
+	cout<<"\t\t|    9.退出文件助手    \t|"<<endl<<endl;
+	cout<<endl<<"\t\t=========================="<<endl;
+}
 
-	CreateFile(folder);
-	CreateFile(folder);
-	Print(folder);
-	cout<<"下级目录"<<endl;
+// 选择菜单
+void ChoiceMenu(FolderLink &folder)
+{
+	char str[30];
+	cout<<"\t\t请输入编号:";
+	cin>>str;
+	if(strcmp(str, "1") == 0)
+		PrintCurrent(folder);
+	else if(strcmp(str, "2") == 0)
+		PrintLower(folder);
+	else if(strcmp(str, "3") == 0)
+		ReturnUper(folder);
+	else if(strcmp(str, "4") == 0)
+		ReturnRoot(folder);
+	else if(strcmp(str, "5") == 0)
+		NewFile(folder);
+	else if(strcmp(str, "6") == 0)
+		NewFolder(folder);
+	else if(strcmp(str, "7") == 0)
+		UpdateFile(folder);
+	else if(strcmp(str, "8") == 0)
+		DeleteFile(folder);
+	else if(strcmp(str, "9") == 0)
+		exit(0);
+	else
+	{
+		cout<<"输入有误请重新输入."<<endl;
+	}
+}
+
+// 将数据输入到文件中
+int Write()
+{
+	ofstream outputfile("data.txt");
+	if(!outputfile)
+	{
+		cout<<"尝试打开输出文件流出错."<<endl;
+		return -1;
+	}
+	outputfile<<"Hello world";
+	outputfile.close();
 	return 0;
 }
+
+// 主程序入口
+int main()
+{
+	FolderLink folder= new FolderNode;
+	Init(folder);
+	Write();
+	while(true)
+	{
+		ShowMenu(folder);
+		ChoiceMenu(folder);
+	}
+	return 0;
+}
+
