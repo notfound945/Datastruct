@@ -326,9 +326,25 @@ int Write()
 		cout<<"尝试打开输出文件流出错."<<endl;
 		return -1;
 	}
-	outputfile<<"Hello world";
+	outputfile<<"hello.c 34.2 "
+		<<"world.docx 43.5 "
+		<<"demp.cpp 34.5";
 	outputfile.close();
 	return 0;
+}
+
+void Load(FolderLink &folder)
+{
+	ifstream inputfile("data.txt");
+	while(!inputfile.eof())
+	{
+		FileNode *insertNode = new FileNode;
+		inputfile>>insertNode->filename;
+		inputfile>>insertNode->filesize;
+		insertNode->next = folder->filelist;
+		folder->filelist = insertNode;
+	}
+	inputfile.close();
 }
 
 // 主程序入口
@@ -337,6 +353,7 @@ int main()
 	FolderLink folder = new FolderNode;
 	Init(folder);
 	Write();
+	Load(folder);
 	while (true)
 	{
 		ShowMenu(folder);
