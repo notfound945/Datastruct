@@ -13,9 +13,8 @@ typedef struct FileNode
 {
 	char filename[20];
 	float filesize;
-	char attribute[5];
 	FileNode *next;
-}FileNode;
+}FileNode, *FileLink;
 
 typedef struct FolderNode 
 {
@@ -27,9 +26,15 @@ typedef struct FolderNode
 // 初始化文件目录
 void Init(FolderLink &folder)
 {
+	// 根目录名为 root 
 	strcpy(folder->foldername, "root");
+	// 文件夹链表
 	folder->folderlist = NULL;
 	folder->filelist = NULL;
+	// 文件链表 
+	FileLink filelink = new FileNode;
+	filelink->next = NULL;
+	folder->filelist = filelink;
 }
 
 // 查看当前目录
@@ -40,7 +45,7 @@ void PrintCurrent(FolderLink &folder)
 	cout<<endl<<"当前根目录: "<<folder->foldername<<endl;
 	cout<<"===文件名===\t\t===文件大小===\t\t===文件类型==="<<endl;
 	FolderNode *tempfolder = folder->folderlist;
-	FileNode *tempfile = folder->filelist;
+	FileNode *tempfile = folder->filelist->next;
 	if (!tempfolder && !folder->filelist)
 		cout<<endl<<"==目录为空=="<<endl<<endl;
 	while (tempfolder)
@@ -96,6 +101,7 @@ void NewFile(FolderLink &folder)
 	char option[10]; // 判断是否添加文件
 	cout<<"新建文件"<<endl;
 	FileNode *insertNode = new FileNode;
+	FileNode *tempNode = folder->filelist;
 	cout<<"========="<<endl;
 	// 添加文件信息
 	cout<<"请输入新建文件信息"<<endl;
@@ -104,8 +110,8 @@ void NewFile(FolderLink &folder)
 	cout<<"文件大小:";
 	cin>>insertNode->filesize;
 	// 文件插入到链表
-	insertNode->next = folder->filelist;
-	folder->filelist = insertNode;
+	insertNode->next = tempNode->next;
+	tempNode->next = insertNode;
 
 	cout<<"文件新建成功，是否继续添加？y/n"<<endl;
 	cin>>option;
@@ -217,8 +223,6 @@ void DeleteFile(FolderLink &folder)
 			tempfile = tempfile->next;
 		}
 	}
-	cout<<"遍历结果 serial "<<serial<<endl;
-	cout<<"遍历结果 flag "<<flag<<endl;
 	// 判断是否查找到对应文件
 	if (flag != -1)
 	{
@@ -229,7 +233,7 @@ void DeleteFile(FolderLink &folder)
 		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
 			int j = 0;
-			FileNode *tempfile = folder->filelist; // 用于遍历链表信息
+			tempfile = folder->filelist; // 用于遍历链表信息
 			FileNode *deletefile = new FileNode; // 用于保存要删除节点信息
 			// 指针移动到指定位置
 			while (tempfile->next && j < serial-1)
@@ -238,7 +242,7 @@ void DeleteFile(FolderLink &folder)
 				j++;
 			}
 			//  删除文件位置不合法
-			if(!tempfile->next)
+			if(!tempfile->next && j > serial - 1)
 			{
 				cout<<"删除位置不合法"<<endl;
 				return;
@@ -291,7 +295,10 @@ int Save(FolderLink &folder)
 	ofstream outputfile2("file.txt"); // 输出文件信息到file.txt
 	// 判断是否打开输出文件夹流
 	if(!outputfile1 &&!outputfile2)
+	{
+		cout<<"文件保存失败"<<endl;
 		return -1;
+	}
 
 	// 保存文件夹信息
 	FolderNode *tempfolder = folder->folderlist;
@@ -302,7 +309,7 @@ int Save(FolderLink &folder)
 	}
 
 	// 保存文件信息
-	FileNode *tempfile = folder->filelist;
+	FileNode *tempfile = folder->filelist->next;
 	while(tempfile)
 	{
 		outputfile2<<endl<<tempfile->filename<<endl<<tempfile->filesize;
@@ -393,15 +400,18 @@ void Load(FolderLink &folder)
 {
 	ifstream inputfile1("file.txt");
 	ifstream inputfile2("folder.txt");
+	// 文件链表临时节点
+	FileNode *tempfile = folder->filelist;
 	// 写入文件信息
 	while(!inputfile1.eof())
 	{
 		FileNode *insertNode = new FileNode;
 		inputfile1>>insertNode->filename;
 		inputfile1>>insertNode->filesize;
-		insertNode->next = folder->filelist;
-		folder->filelist = insertNode;
+		insertNode->next = tempfile->next;
+		tempfile->next = insertNode;
 	}
+
 	// 写入文件夹信息
 	while(!inputfile2.eof())
 	{
@@ -416,16 +426,13 @@ void Load(FolderLink &folder)
 	inputfile2.close();
 }
 
-// 主程序入口
-int main()
+// 检查载入数据 
+void Check(FolderLink &folder)
 {
 	char option[10];
 	// 定义输入文件流
 	ifstream inputfile1("file.txt");
 	ifstream inputfile2("folder.txt");
-	FolderLink folder = new FolderNode;
-	// 初始化
-	Init(folder);
 	// 判断文件是否存在
 	if (!inputfile1 && !inputfile2)
 	{
@@ -444,6 +451,28 @@ int main()
 		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 			Load(folder);
 	}
+
+
+}
+
+// 主程序入口
+int main()
+{
+	// 定义文件夹链表
+	FolderLink folder = new FolderNode;
+	// 初始化链表
+	Init(folder);
+	// 检查数据
+	Check(folder);
+	int i = 0;
+	FileNode *temp = folder->filelist->next;
+	while(temp)
+	{
+		i++;
+		cout<<i<<"="<<temp->filename<<endl;
+		temp = temp->next;
+	}
+
 	while (true)
 	{
 		ShowMenu(folder);
