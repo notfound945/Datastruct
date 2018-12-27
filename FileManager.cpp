@@ -184,13 +184,13 @@ void DeleteFile(FolderLink &folder)
 {
 	int serial = 0; // 记录目标序号
 	bool flag = false; // 访问标志
-	char filename[20];
-	char option[10];
+	char filename[20]; // 输入文件名
+	char option[10]; // 输入确认信息
 	cout<<"=========="<<endl;
 	cout<<"删除文件"<<endl;
 	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
-	deletefile->next = NULL;
+	// 判断目录是否为空
 	if (!tempfile)
 	{
 		cout<<"目录为空，不能进行查找删除操作"<<endl;
@@ -200,6 +200,7 @@ void DeleteFile(FolderLink &folder)
 	}
 	cout<<"请输入要删除的文件名:";
 	cin>>filename;
+	// 遍历查找操作
 	while (tempfile)
 	{
 		if (strcmp(tempfile->filename, filename) == 0)
@@ -213,6 +214,7 @@ void DeleteFile(FolderLink &folder)
 			tempfile = tempfile->next;
 		}
 	}
+
 	cout<<"result "<<serial<<endl;
 	if (flag == true)
 	{
@@ -221,7 +223,6 @@ void DeleteFile(FolderLink &folder)
 		cin>>option;	
 		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
-			// 遍历链表删除操作
 			FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 			serial = -1;
 			// 有且只有一个文件的情况
@@ -292,10 +293,12 @@ void ShowMenu(FolderLink &folder)
 // 保存数据
 int Save(FolderLink &folder)
 {
-	ofstream outputfile1("folder.txt");
-	ofstream outputfile2("file.txt");
+	ofstream outputfile1("folder.txt"); // 输出文件夹信息到folder.txt
+	ofstream outputfile2("file.txt"); // 输出文件信息到file.txt
+	// 判断是否打开输出文件夹流
 	if(!outputfile1 &&!outputfile2)
 		return -1;
+
 	// 保存文件夹信息
 	FolderNode *tempfolder = folder->folderlist;
 	while(tempfolder)
@@ -303,6 +306,7 @@ int Save(FolderLink &folder)
 		outputfile1<<endl<<tempfolder->foldername;
 		tempfolder = tempfolder->folderlist;
 	}
+
 	// 保存文件信息
 	FileNode *tempfile = folder->filelist;
 	while(tempfile)
@@ -345,7 +349,7 @@ void ChoiceMenu(FolderLink &folder)
 	}
 }
 
-// 将数据输入到文件中
+// 将内置数据输入到文件中
 int Write()
 {
 	ofstream outputfile1("file.txt");
@@ -355,7 +359,7 @@ int Write()
 		cout<<"尝试打开输出文件流出错."<<endl;
 		return -1;
 	}
-	// 写入文件信息
+	// 写入内置数据到文件信息
 	outputfile1<<
 		"bootsqm.dat 34.2 "
 		"world.docx 43.5 "
@@ -368,7 +372,7 @@ int Write()
 		"VBadin.ini 1.8 "
 		"winhelp.exe 3.6 "
 		"Main.java 45.3";
-	// 写入文件夹信息
+	// 写入内置数据文件夹信息
 	outputfile2<<
 		"java "
 		"c# "
