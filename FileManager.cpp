@@ -61,6 +61,10 @@ void PrintLower(FolderLink &folder)
 {
 	cout<<"======="<<endl;
 	cout<<"查看下层文件"<<endl;
+	cout<<"==未实现此功能"<<endl;
+	cout<<"任意键返回主菜单"<<endl;
+	system("pause>>null");
+	return;
 }
 
 // 返回上层目录
@@ -68,6 +72,10 @@ void ReturnUper(FolderLink &folder)
 {
 	cout<<"========"<<endl;
 	cout<<"返回上层目录"<<endl;
+	cout<<"==未实现此功能"<<endl;
+	cout<<"任意键返回主菜单"<<endl;
+	system("pause>>null");
+	return;
 }
 
 // 返回根目录
@@ -75,6 +83,10 @@ void ReturnRoot(FolderLink &folder)
 {
 	cout<<"========"<<endl;
 	cout<<"返回根目录"<<endl;
+	cout<<"==未实现些功能"<<endl;
+	cout<<"任意键返回主菜单"<<endl;
+	system("pause>>null");
+	return;
 }
 
 // 新建文件
@@ -121,7 +133,22 @@ void NewFolder(FolderLink &folder)
 // 更新文件信息
 void UpdateFile(FolderLink &folder)
 {
+	char filename[20];
+	bool flag;
 	cout<<"更新文件信息"<<endl;
+	cout<<"========="<<endl;
+	FileNode *tempfile = folder->filelist;
+	cout<<"输入需要修改文件名:"<<endl;
+	cin>>filename;
+	while(tempfile)
+	{
+		if(strcmp(tempfile->filename, filename) == 0)
+		{
+			cout<<"找到文件"<<endl;
+		} else {
+			tempfile = tempfile->next;
+		}
+	}
 }
 
 // 删除文件
@@ -135,6 +162,7 @@ void DeleteFile(FolderLink &folder)
 	cout<<"删除文件"<<endl;
 	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
+	deletefile->next = NULL;
 	if(!tempfile)
 	{
 		cout<<"目录为空，不能进行查找删除操作"<<endl;
@@ -146,7 +174,6 @@ void DeleteFile(FolderLink &folder)
 	cin>>filename;
 	while(tempfile)
 	{
-		cout<<tempfile->filename<<endl;
 		if(strcmp(tempfile->filename, filename) == 0)
 		{
 			serial++;
@@ -158,28 +185,53 @@ void DeleteFile(FolderLink &folder)
 			tempfile = tempfile->next;
 		}
 	}
-		cout<<"result "<<serial<<endl;
-		if(flag == true)
+	cout<<"result "<<serial<<endl;
+	if(flag == true)
+	{
+		cout<<"找到此文件"<<endl;
+		cout<<"是否删除？y/n"<<endl;
+		cin>>option;	
+		if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
-			cout<<"找到此文件"<<endl;
-			cout<<"是否删除？"<<endl;
-			cin>>option;	
-			if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+			// 遍历链表删除操作
+			FileNode *tempfile = folder->filelist; // 用于遍历链表信息
+			serial = -1;
+			// 有且只有一个文件的情况
+			if(tempfile->next)
 			{
-				// 遍历链表删除操作
-				FileNode *tempfile = folder->filelist; // 用于遍历链表信息
-				while(tempfile)
+				cout<<"只有一个节点"<<endl;
+				deletefile = tempfile;
+				folder->filelist = NULL;
+			}
+			while(tempfile->next)
+			{
+				cout<<tempfile->filename<<endl;
+				cout<<flag<<endl;
+				cout<<serial<<endl;
+				serial++;
+				if(serial == flag)
 				{
-
+					deletefile = tempfile->next;
+					tempfile->next = deletefile->next;
+					delete tempfile;
+					cout<<"文件已删除"<<endl;
+					cout<<"任意键返回主菜单"<<endl;
+					system("pause>>null");
+					return;
+				} else {
+					cout<<"????"<<endl;
 				}
-			} else {
-				cout<<"文件已保留"<<endl;
-				cout<<"任意键返主菜单"<<endl;
-				return;
+				tempfile = tempfile->next;
 			}
 		} else {
-			cout<<"未找到此文件"<<endl;
+			cout<<"文件已保留"<<endl;
+			cout<<"任意键返回主菜单"<<endl;
+			system("pause>>null");
+			return;
 		}
+	} else {
+		cout<<"未找到此文件"<<endl;
+	}
 	cout<<"是否继续删除操作？y/n"<<endl;
 	cin>>option;
 	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
@@ -263,4 +315,3 @@ int main()
 	}
 	return 0;
 }
-
