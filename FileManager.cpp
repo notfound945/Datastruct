@@ -37,6 +37,7 @@ void PrintCurrent(FolderLink &folder)
 {
 	cout<<"========="<<endl;
 	cout<<"查看当前目录"<<endl;
+	cout<<endl<<"当前根目录: "<<folder->foldername<<endl;
 	cout<<"===文件名===\t\t===文件大小===\t\t===文件类型==="<<endl;
 	FolderNode *tempfolder = folder->folderlist;
 	FileNode *tempfile = folder->filelist;
@@ -320,31 +321,73 @@ void ChoiceMenu(FolderLink &folder)
 // 将数据输入到文件中
 int Write()
 {
-	ofstream outputfile("data.txt");
-	if (!outputfile)
+	ofstream outputfile1("file.txt");
+	ofstream outputfile2("folder.txt");
+	if (!outputfile1 && !outputfile2)
 	{
 		cout<<"尝试打开输出文件流出错."<<endl;
 		return -1;
 	}
-	outputfile<<"hello.c 34.2 "
-		<<"world.docx 43.5 "
-		<<"demp.cpp 34.5";
-	outputfile.close();
+	// 写入文件信息
+	outputfile1<<
+		"bootsqm.dat 34.2 "
+		"world.docx 43.5 "
+		"demo.cpp 34.5 "
+		"visual.projc 6.56 "
+		"msvcr.dll 2.3 "
+		"atmlib.dll 4.3 "
+		"wplog.txt 3.2 "
+		"windows.ini 3.4 "
+		"VBadin.ini 1.8 "
+		"winhelp.exe 3.6 "
+		"Main.java 45.3";
+	// 写入文件夹信息
+	outputfile2<<
+		"java "
+		"c# "
+		"c++ "
+		"c "
+		"jsp "
+		"SQL "
+		"php "
+		"ruby "
+		"html "
+		"xml "
+		"css "
+		"perl "
+		"lau "
+		"bash "
+		".NET";
+	outputfile1.close();
+	outputfile2.close();
 	return 0;
 }
 
 void Load(FolderLink &folder)
 {
-	ifstream inputfile("data.txt");
-	while(!inputfile.eof())
+	ifstream inputfile1("file.txt");
+	ifstream inputfile2("folder.txt");
+	// 写入文件信息
+	while(!inputfile1.eof())
 	{
 		FileNode *insertNode = new FileNode;
-		inputfile>>insertNode->filename;
-		inputfile>>insertNode->filesize;
+		inputfile1>>insertNode->filename;
+		inputfile1>>insertNode->filesize;
 		insertNode->next = folder->filelist;
 		folder->filelist = insertNode;
 	}
-	inputfile.close();
+	// 写入文件夹信息
+	while(!inputfile2.eof())
+	{
+		FolderNode *tempNode = new FolderNode;
+		FolderNode *insertNode = new FolderNode;
+		tempNode = folder;
+		inputfile2>>insertNode->foldername;
+		insertNode->folderlist = tempNode->folderlist;
+		tempNode->folderlist = insertNode;
+	}
+	inputfile1.close();
+	inputfile2.close();
 }
 
 // 主程序入口
