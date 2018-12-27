@@ -54,7 +54,7 @@ void PrintCurrent(FolderLink &folder)
 		tempfile = tempfile->next;
 	}
 	cout<<"任意键返回主菜单..."<<endl;
-	system("pause>null");
+	system("pause>nul");
 }
 
 // 查看下层文件
@@ -64,7 +64,7 @@ void PrintLower(FolderLink &folder)
 	cout<<"查看下层文件"<<endl;
 	cout<<"==未实现此功能"<<endl;
 	cout<<"任意键返回主菜单"<<endl;
-	system("pause>>null");
+	system("pause>>nul");
 	return;
 }
 
@@ -75,7 +75,7 @@ void ReturnUper(FolderLink &folder)
 	cout<<"返回上层目录"<<endl;
 	cout<<"==未实现此功能"<<endl;
 	cout<<"任意键返回主菜单"<<endl;
-	system("pause>>null");
+	system("pause>>nul");
 	return;
 }
 
@@ -86,7 +86,7 @@ void ReturnRoot(FolderLink &folder)
 	cout<<"返回根目录"<<endl;
 	cout<<"==未实现些功能"<<endl;
 	cout<<"任意键返回主菜单"<<endl;
-	system("pause>>null");
+	system("pause>>nul");
 	return;
 }
 
@@ -143,7 +143,7 @@ void UpdateFile(FolderLink &folder)
 	{
 		cout<<"目录为空，不能进行查找更新操作"<<endl;
 		cout<<"任意键返回菜单"<<endl;
-		system("pause>>null");
+		system("pause>>nul");
 		return;
 	}
 	cout<<"输入需要修改文件名:"<<endl;
@@ -195,7 +195,7 @@ void DeleteFile(FolderLink &folder)
 	{
 		cout<<"目录为空，不能进行查找删除操作"<<endl;
 		cout<<"任意键返回菜单"<<endl;
-		system("pause>>null");
+		system("pause>>nul");
 		return;
 	}
 	cout<<"请输入要删除的文件名:";
@@ -244,7 +244,7 @@ void DeleteFile(FolderLink &folder)
 					delete tempfile;
 					cout<<"文件已删除"<<endl;
 					cout<<"任意键返回主菜单"<<endl;
-					system("pause>>null");
+					system("pause>>nul");
 					return;
 				} else {
 					cout<<"????"<<endl;
@@ -254,7 +254,7 @@ void DeleteFile(FolderLink &folder)
 		} else {
 			cout<<"文件已保留"<<endl;
 			cout<<"任意键返回主菜单"<<endl;
-			system("pause>>null");
+			system("pause>>nul");
 			return;
 		}
 	} else {
@@ -284,8 +284,33 @@ void ShowMenu(FolderLink &folder)
 	cout<<"\t\t|    6.新增下层目录    \t|"<<endl<<endl;
 	cout<<"\t\t|    7.更新文件信息    \t|"<<endl<<endl;
 	cout<<"\t\t|    8.删除文件信息    \t|"<<endl<<endl;
-	cout<<"\t\t|    9.退出文件助手    \t|"<<endl<<endl;
+	cout<<"\t\t|    9.保存目录信息   \t|"<<endl<<endl;
+	cout<<"\t\t|    10.退出文件助手   \t|"<<endl<<endl;
 	cout<<endl<<"\t\t=========================="<<endl;
+}
+
+// 保存数据
+int Save(FolderLink &folder)
+{
+	ofstream outputfile1("folder.txt");
+	ofstream outputfile2("file.txt");
+	if(!outputfile1 &&!outputfile2)
+		return -1;
+	// 保存文件夹信息
+	FolderNode *tempfolder = folder->folderlist;
+	while(tempfolder)
+	{
+		outputfile1<<endl<<tempfolder->foldername;
+		tempfolder = tempfolder->folderlist;
+	}
+	// 保存文件信息
+	FileNode *tempfile = folder->filelist;
+	while(tempfile)
+	{
+		outputfile2<<endl<<tempfile->filename<<endl<<tempfile->filesize;
+		tempfile = tempfile->next;
+	}
+	return 0;
 }
 
 // 选择菜单
@@ -311,6 +336,8 @@ void ChoiceMenu(FolderLink &folder)
 	else if (strcmp(str, "8") == 0)
 		DeleteFile(folder);
 	else if (strcmp(str, "9") == 0)
+		Save(folder);
+	else if (strcmp(str, "10") == 0)
 		exit(0);
 	else
 	{
@@ -363,6 +390,7 @@ int Write()
 	return 0;
 }
 
+// 载入数据
 void Load(FolderLink &folder)
 {
 	ifstream inputfile1("file.txt");
@@ -393,10 +421,31 @@ void Load(FolderLink &folder)
 // 主程序入口
 int main()
 {
+	char option[10];
+	// 定义输入文件流
+	ifstream inputfile1("file.txt");
+	ifstream inputfile2("folder.txt");
 	FolderLink folder = new FolderNode;
+	// 初始化
 	Init(folder);
-	Write();
-	Load(folder);
+	// 判断文件是否存在
+	if (!inputfile1 && !inputfile2)
+	{
+		cout<<"==未找到数据文件"<<endl;	
+		cout<<"是否载入内置数据? y/n"<<endl;
+		cin>>option;
+		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+		{
+			Write();
+			Load(folder);
+		}
+	} else {
+		cout<<"==找到数据文件"<<endl;
+		cout<<"是否载入数据? y/n"<<endl;
+		cin>>option;
+		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+			Load(folder);
+	}
 	while (true)
 	{
 		ShowMenu(folder);
