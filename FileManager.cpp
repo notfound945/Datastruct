@@ -97,13 +97,16 @@ void NewFile(FolderLink &folder)
 	cout<<"新建文件"<<endl;
 	FileNode *insertNode = new FileNode;
 	cout<<"========="<<endl;
+	// 添加文件信息
 	cout<<"请输入新建文件信息"<<endl;
 	cout<<"文件名:";
 	cin>>insertNode->filename;
 	cout<<"文件大小:";
 	cin>>insertNode->filesize;
+	// 文件插入到链表
 	insertNode->next = folder->filelist;
 	folder->filelist = insertNode;
+
 	cout<<"文件新建成功，是否继续添加？y/n"<<endl;
 	cin>>option;
 	if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
@@ -182,7 +185,7 @@ void UpdateFile(FolderLink &folder)
 // 删除文件
 void DeleteFile(FolderLink &folder)
 {
-	int serial = 0; // 记录目标序号
+	int serial = -1; // 记录目标序号
 	bool flag = false; // 访问标志
 	char filename[20]; // 输入文件名
 	char option[10]; // 输入确认信息
@@ -214,44 +217,35 @@ void DeleteFile(FolderLink &folder)
 			tempfile = tempfile->next;
 		}
 	}
-
-	cout<<"result "<<serial<<endl;
-	if (flag == true)
+	cout<<"遍历结果 serial "<<serial<<endl;
+	cout<<"遍历结果 flag "<<flag<<endl;
+	// 判断是否查找到对应文件
+	if (flag != -1)
 	{
 		cout<<"找到此文件"<<endl;
 		cout<<"是否删除？y/n"<<endl;
-		cin>>option;	
+		cin>>option;
+		// 开始删除文件
 		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
+			int j = 0;
 			FileNode *tempfile = folder->filelist; // 用于遍历链表信息
-			serial = -1;
-			// 有且只有一个文件的情况
-			if (tempfile->next)
+			FileNode *deletefile = new FileNode; // 用于保存要删除节点信息
+			// 指针移动到指定位置
+			while (tempfile->next && j < serial-1)
 			{
-				cout<<"只有一个节点"<<endl;
-				deletefile = tempfile;
-				folder->filelist = NULL;
-			}
-			while (tempfile->next)
-			{
-				cout<<tempfile->filename<<endl;
-				cout<<flag<<endl;
-				cout<<serial<<endl;
-				serial++;
-				if (serial == flag)
-				{
-					deletefile = tempfile->next;
-					tempfile->next = deletefile->next;
-					delete tempfile;
-					cout<<"文件已删除"<<endl;
-					cout<<"任意键返回主菜单"<<endl;
-					system("pause>>nul");
-					return;
-				} else {
-					cout<<"????"<<endl;
-				}
 				tempfile = tempfile->next;
+				j++;
 			}
+			//  删除文件位置不合法
+			if(!tempfile->next)
+			{
+				cout<<"删除位置不合法"<<endl;
+				return;
+			}
+			deletefile = tempfile->next;
+			tempfile->next = deletefile->next;
+			delete deletefile;
 		} else {
 			cout<<"文件已保留"<<endl;
 			cout<<"任意键返回主菜单"<<endl;
