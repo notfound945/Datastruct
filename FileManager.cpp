@@ -40,16 +40,16 @@ void PrintCurrent(FolderLink &folder)
 	cout<<"===文件名===\t\t===文件大小===\t\t===文件类型==="<<endl;
 	FolderNode *tempfolder = folder->folderlist;
 	FileNode *tempfile = folder->filelist;
-	if(!tempfolder && !folder->filelist)
+	if (!tempfolder && !folder->filelist)
 		cout<<endl<<"==目录为空=="<<endl<<endl;
-	while(tempfolder)
+	while (tempfolder)
 	{
-		cout<<"./"<<tempfolder->foldername<<endl;
+		cout<<"./"<<tempfolder->foldername<<"\t\t\t\t\t\t文件夹"<<endl;
 		tempfolder = tempfolder->folderlist;
 	}
-	while(tempfile)
+	while (tempfile)
 	{
-		cout<<tempfile->filename<<"\t\t\t"<<tempfile->filesize<<endl;
+		cout<<tempfile->filename<<"\t\t\t"<<tempfile->filesize<<"\t\t\t文件"<<endl;
 		tempfile = tempfile->next;
 	}
 	cout<<"任意键返回主菜单..."<<endl;
@@ -105,7 +105,7 @@ void NewFile(FolderLink &folder)
 	folder->filelist = insertNode;
 	cout<<"文件新建成功，是否继续添加？y/n"<<endl;
 	cin>>option;
-	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+	if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		NewFile(folder);
 }
 
@@ -125,7 +125,7 @@ void NewFolder(FolderLink &folder)
 	tempNode->folderlist = insertNode;
 	cout<<"文件夹新建成功，是否继续添加？y/n"<<endl;
 	cin>>option;
-	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+	if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		NewFolder(folder);
 
 }
@@ -133,20 +133,47 @@ void NewFolder(FolderLink &folder)
 // 更新文件信息
 void UpdateFile(FolderLink &folder)
 {
-	char filename[20];
-	bool flag;
+	char filename[20], option[10];
+	bool flag = false;
 	cout<<"更新文件信息"<<endl;
 	cout<<"========="<<endl;
 	FileNode *tempfile = folder->filelist;
+	if (!tempfile)
+	{
+		cout<<"目录为空，不能进行查找更新操作"<<endl;
+		cout<<"任意键返回菜单"<<endl;
+		system("pause>>null");
+		return;
+	}
 	cout<<"输入需要修改文件名:"<<endl;
 	cin>>filename;
-	while(tempfile)
+	while (tempfile)
 	{
-		if(strcmp(tempfile->filename, filename) == 0)
+		// 遍历链表查找文件
+		if (strcmp(tempfile->filename, filename) == 0)
 		{
-			cout<<"找到文件"<<endl;
+			cout<<"已找到 "<<filename<<" 文件"<<endl;
+			cout<<"输入修改后的文件名:";
+			cin>>tempfile->filename;
+			cout<<"输入修改后的文件大小:";
+			cin>>tempfile->filesize;
+			flag = true;
+
 		} else {
 			tempfile = tempfile->next;
+		}
+	}
+	// 判断是否找到文件
+	if (flag != true)
+	{
+		cout<<"未找到此文件，是否继续操作？"<<endl;
+		cout<<"是否继续更新操作？y/n"<<endl;
+		cin>>option;
+		if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+		{
+			UpdateFile(folder);
+		} else {
+			return;
 		}
 	}
 }
@@ -163,7 +190,7 @@ void DeleteFile(FolderLink &folder)
 	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
 	deletefile->next = NULL;
-	if(!tempfile)
+	if (!tempfile)
 	{
 		cout<<"目录为空，不能进行查找删除操作"<<endl;
 		cout<<"任意键返回菜单"<<endl;
@@ -172,9 +199,9 @@ void DeleteFile(FolderLink &folder)
 	}
 	cout<<"请输入要删除的文件名:";
 	cin>>filename;
-	while(tempfile)
+	while (tempfile)
 	{
-		if(strcmp(tempfile->filename, filename) == 0)
+		if (strcmp(tempfile->filename, filename) == 0)
 		{
 			serial++;
 			tempfile = tempfile->next;
@@ -186,30 +213,30 @@ void DeleteFile(FolderLink &folder)
 		}
 	}
 	cout<<"result "<<serial<<endl;
-	if(flag == true)
+	if (flag == true)
 	{
 		cout<<"找到此文件"<<endl;
 		cout<<"是否删除？y/n"<<endl;
 		cin>>option;	
-		if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
 			// 遍历链表删除操作
 			FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 			serial = -1;
 			// 有且只有一个文件的情况
-			if(tempfile->next)
+			if (tempfile->next)
 			{
 				cout<<"只有一个节点"<<endl;
 				deletefile = tempfile;
 				folder->filelist = NULL;
 			}
-			while(tempfile->next)
+			while (tempfile->next)
 			{
 				cout<<tempfile->filename<<endl;
 				cout<<flag<<endl;
 				cout<<serial<<endl;
 				serial++;
-				if(serial == flag)
+				if (serial == flag)
 				{
 					deletefile = tempfile->next;
 					tempfile->next = deletefile->next;
@@ -234,9 +261,11 @@ void DeleteFile(FolderLink &folder)
 	}
 	cout<<"是否继续删除操作？y/n"<<endl;
 	cin>>option;
-	if(strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
+	if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 	{
 		DeleteFile(folder);
+	} else {
+		return;
 	}
 }
 
@@ -264,23 +293,23 @@ void ChoiceMenu(FolderLink &folder)
 	char str[30];
 	cout<<"\t\t请输入编号:";
 	cin>>str;
-	if(strcmp(str, "1") == 0)
+	if (strcmp(str, "1") == 0)
 		PrintCurrent(folder);
-	else if(strcmp(str, "2") == 0)
+	else if (strcmp(str, "2") == 0)
 		PrintLower(folder);
-	else if(strcmp(str, "3") == 0)
+	else if (strcmp(str, "3") == 0)
 		ReturnUper(folder);
-	else if(strcmp(str, "4") == 0)
+	else if (strcmp(str, "4") == 0)
 		ReturnRoot(folder);
-	else if(strcmp(str, "5") == 0)
+	else if (strcmp(str, "5") == 0)
 		NewFile(folder);
-	else if(strcmp(str, "6") == 0)
+	else if (strcmp(str, "6") == 0)
 		NewFolder(folder);
-	else if(strcmp(str, "7") == 0)
+	else if (strcmp(str, "7") == 0)
 		UpdateFile(folder);
-	else if(strcmp(str, "8") == 0)
+	else if (strcmp(str, "8") == 0)
 		DeleteFile(folder);
-	else if(strcmp(str, "9") == 0)
+	else if (strcmp(str, "9") == 0)
 		exit(0);
 	else
 	{
@@ -292,7 +321,7 @@ void ChoiceMenu(FolderLink &folder)
 int Write()
 {
 	ofstream outputfile("data.txt");
-	if(!outputfile)
+	if (!outputfile)
 	{
 		cout<<"尝试打开输出文件流出错."<<endl;
 		return -1;
@@ -305,10 +334,10 @@ int Write()
 // 主程序入口
 int main()
 {
-	FolderLink folder= new FolderNode;
+	FolderLink folder = new FolderNode;
 	Init(folder);
 	Write();
-	while(true)
+	while (true)
 	{
 		ShowMenu(folder);
 		ChoiceMenu(folder);
