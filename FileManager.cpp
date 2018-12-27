@@ -147,7 +147,7 @@ void UpdateFile(FolderLink &folder)
 	bool flag = false;
 	cout<<"更新文件信息"<<endl;
 	cout<<"========="<<endl;
-	FileNode *tempfile = folder->filelist;
+	FileNode *tempfile = folder->filelist->next;
 	if (!tempfile)
 	{
 		cout<<"目录为空，不能进行查找更新操作"<<endl;
@@ -197,7 +197,7 @@ void DeleteFile(FolderLink &folder)
 	char option[10]; // 输入确认信息
 	cout<<"=========="<<endl;
 	cout<<"删除文件"<<endl;
-	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
+	FileNode *tempfile = folder->filelist->next; // 用于遍历链表信息
 	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
 	// 判断目录是否为空
 	if (!tempfile)
@@ -291,10 +291,10 @@ void ShowMenu(FolderLink &folder)
 // 保存数据
 int Save(FolderLink &folder)
 {
-	ofstream outputfile1("folder.txt"); // 输出文件夹信息到folder.txt
-	ofstream outputfile2("file.txt"); // 输出文件信息到file.txt
+	ofstream outputfolder("folder.txt"); // 输出文件夹信息到folder.txt
+	ofstream outputfile("file.txt"); // 输出文件信息到file.txt
 	// 判断是否打开输出文件夹流
-	if(!outputfile1 &&!outputfile2)
+	if(!outputfolder && !outputfile)
 	{
 		cout<<"文件保存失败"<<endl;
 		return -1;
@@ -304,7 +304,7 @@ int Save(FolderLink &folder)
 	FolderNode *tempfolder = folder->folderlist;
 	while(tempfolder)
 	{
-		outputfile1<<endl<<tempfolder->foldername;
+		outputfolder<<endl<<tempfolder->foldername;
 		tempfolder = tempfolder->folderlist;
 	}
 
@@ -312,9 +312,21 @@ int Save(FolderLink &folder)
 	FileNode *tempfile = folder->filelist->next;
 	while(tempfile)
 	{
-		outputfile2<<endl<<tempfile->filename<<endl<<tempfile->filesize;
+		outputfile<<endl<<tempfile->filename<<endl<<tempfile->filesize;
 		tempfile = tempfile->next;
 	}
+	ifstream inputfile("file.txt");
+	ifstream inputfolder("folder.txt");
+	if(inputfile && inputfolder)
+	{
+		cout<<"文件保存成功"<<endl;
+	} else {
+		cout<<"文件保存失败，请重试"<<endl;
+	}
+	inputfile.close();
+	inputfolder.close();
+	cout<<"任意键返回主菜单"<<endl;
+	system("pause>>nul");
 	return 0;
 }
 
@@ -464,15 +476,7 @@ int main()
 	Init(folder);
 	// 检查数据
 	Check(folder);
-	int i = 0;
-	FileNode *temp = folder->filelist->next;
-	while(temp)
-	{
-		i++;
-		cout<<i<<"="<<temp->filename<<endl;
-		temp = temp->next;
-	}
-
+	// 菜单控制台
 	while (true)
 	{
 		ShowMenu(folder);
