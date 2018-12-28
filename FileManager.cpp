@@ -84,12 +84,12 @@ void ReturnUper(FolderLink &folder)
 	return;
 }
 
-// 返回根目录
+// 返回根目录 
 void ReturnRoot(FolderLink &folder)
 {
 	cout<<"========"<<endl;
 	cout<<"返回根目录"<<endl;
-	cout<<"==未实现些功能"<<endl;
+	cout<<"==未实现此功能"<<endl;
 	cout<<"任意键返回主菜单"<<endl;
 	system("pause>>nul");
 	return;
@@ -168,7 +168,6 @@ void UpdateFile(FolderLink &folder)
 			cout<<"输入修改后的文件大小:";
 			cin>>tempfile->filesize;
 			flag = true;
-
 		} else {
 			tempfile = tempfile->next;
 		}
@@ -197,10 +196,10 @@ void DeleteFile(FolderLink &folder)
 	char option[10]; // 输入确认信息
 	cout<<"=========="<<endl;
 	cout<<"删除文件"<<endl;
-	FileNode *tempfile = folder->filelist->next; // 用于遍历链表信息
+	FileNode *tempfile = folder->filelist; // 用于遍历链表信息
 	FileNode *deletefile = new FileNode; // 临时保存删除节点信息
 	// 判断目录是否为空
-	if (!tempfile)
+	if (!tempfile->next)
 	{
 		cout<<"目录为空，不能进行查找删除操作"<<endl;
 		cout<<"任意键返回菜单"<<endl;
@@ -212,14 +211,13 @@ void DeleteFile(FolderLink &folder)
 	// 遍历查找操作
 	while (tempfile)
 	{
-		if (strcmp(tempfile->filename, filename) == 0)
+		if(strcmp(tempfile->filename, filename) == 0)
 		{
 			serial++;
-			tempfile = tempfile->next;
 			flag = serial;
 			break;
 		} else {
-			serial++;	
+			serial++;
 			tempfile = tempfile->next;
 		}
 	}
@@ -232,7 +230,7 @@ void DeleteFile(FolderLink &folder)
 		// 开始删除文件
 		if (strcmp(option, "y") == 0 || strcmp(option, "Y") == 0)
 		{
-			int j = 0;
+			int j = 0; //计数器
 			tempfile = folder->filelist; // 用于遍历链表信息
 			FileNode *deletefile = new FileNode; // 用于保存要删除节点信息
 			// 指针移动到指定位置
@@ -278,8 +276,8 @@ void ShowMenu(FolderLink &folder)
 	cout<<"\t\t|    1.查看当前目录    \t|"<<endl<<endl;
 	cout<<"\t\t|    2.显示下层目录    \t|"<<endl<<endl;
 	cout<<"\t\t|    3.返回上层目录    \t|"<<endl<<endl;
-	cout<<"\t\t|    4.返回根目录    \t|"<<endl<<endl;
-	cout<<"\t\t|    5.新建文件    \t|"<<endl<<endl;
+	cout<<"\t\t|    4.返回到根目录    \t|"<<endl<<endl;
+	cout<<"\t\t|    5.新建文件信息    \t|"<<endl<<endl;
 	cout<<"\t\t|    6.新增下层目录    \t|"<<endl<<endl;
 	cout<<"\t\t|    7.更新文件信息    \t|"<<endl<<endl;
 	cout<<"\t\t|    8.删除文件信息    \t|"<<endl<<endl;
