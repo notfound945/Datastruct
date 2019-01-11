@@ -123,8 +123,8 @@ void LinkAddress() {
     Table *tablehand = new Table[MAXSIZE];
     // 初始化链表头
     for (int i = 0; i < MAXSIZE; i++) {
-        tablehand[i]->data = -1;
-        tablehand[i]->next = NULL;
+        tablehand[i]->data = i;
+        tablehand[i]->next = nullptr;
     }
     int arrays[] = {2, 21, 312, 42, 32, 23, 23, 45, 324, 34, 23, 32, 10, 31, 98, 23, 66, 99, 77, 97};
     cout << "1.插入数据" << endl;
@@ -155,6 +155,7 @@ void LinkAddress() {
 
 
 int main() {
+    cout << "Hello 中文" << endl;
     cout << "---- 散列表操作 ----" << endl;
     cout << " 一、开放地址法" << endl;
     OpenAddress();
